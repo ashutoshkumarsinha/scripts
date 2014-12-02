@@ -76,15 +76,13 @@ function maniCommands() {
 	echo -ne '						[##############            ] (55%)\r'
 	TOTAL_MEMORY=`free | grep Mem | awk '{print $2/1024/1024}'`
 	echo -ne '						[###############           ] (59%)\r'
-	FREE_MEMORY=`free | grep Mem | awk '{print $4/1024/1024}'`
+	FREE_MEMORY=`free |grep "buffers/cache"| awk '{print $4/1024/1024}'`
 	echo -ne '						[################          ] (63%)\r'
-	USED_MEMORY=`free | grep Mem | awk '{print $3/1024/1024}'`
+	USED_MEMORY=`free |grep "buffers/cache"| awk '{print $3/1024/1024}'`
 	echo -ne '						[#################         ] (68%)\r'
-	MEMORY_UTIL=`free | grep Mem | awk '{print $3/$2 * 100.0}'`
+	MEMORY_UTIL=$(echo "$USED_MEMORY/$TOTAL_MEMORY*100.0" | bc -l)
 	echo -ne '						[##################        ] (71%)\r'
-	M=`printf "%.0f" $(free | grep Mem | awk '{print $3/$2 * 100.0}'| bc)`
-	echo -ne '						[###################       ] (75%)\r'
-	MEMORY_FREE=`free | grep Mem | awk '{print $4/$2 * 100.0}'`
+	MEMORY_FREE=$(echo "$FREE_MEMORY/$TOTAL_MEMORY*100.0" | bc -l)
 	echo -ne '						[####################      ] (79%)\r'
 	CPU_MODEL=`cat /proc/cpuinfo | grep 'model name' | cut -d ':' -f2 | sort -u`
 	echo -ne '						[#####################     ] (83%)\r'
