@@ -88,6 +88,8 @@ function maniCommands() {
 	echo -ne '						[#################         ] (68%)\r'
 	MEMORY_UTIL=$(echo "$USED_MEMORY/$TOTAL_MEMORY*100.0" | bc -l)
 	echo -ne '						[##################        ] (71%)\r'
+	echo -ne '						[###################       ] (75%)\r'
+	M=`printf "%.0f" $(echo "$USED_MEMORY/$TOTAL_MEMORY*100.0" | bc -l)`
 	MEMORY_FREE=$(echo "$FREE_MEMORY/$TOTAL_MEMORY*100.0" | bc -l)
 	echo -ne '						[####################      ] (79%)\r'
 	CPU_MODEL=`cat /proc/cpuinfo | grep 'model name' | cut -d ':' -f2 | sort -u`

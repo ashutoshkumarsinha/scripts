@@ -83,6 +83,8 @@ function maniCommands() {
 	MEMORY_UTIL=$(echo "$USED_MEMORY/$TOTAL_MEMORY*100.0" | bc -l)
 	echo -ne '						[##################        ] (71%)\r'
 	MEMORY_FREE=$(echo "$FREE_MEMORY/$TOTAL_MEMORY*100.0" | bc -l)
+	echo -ne '						[###################       ] (75%)\r'
+	M=`printf "%.0f" $(echo "$USED_MEMORY/$TOTAL_MEMORY*100.0" | bc -l)`
 	echo -ne '						[####################      ] (79%)\r'
 	CPU_MODEL=`cat /proc/cpuinfo | grep 'model name' | cut -d ':' -f2 | sort -u`
 	echo -ne '						[#####################     ] (83%)\r'
@@ -247,8 +249,6 @@ function mainFunc() {
 	echo
 	echo
 	echo -e $DRAW_LINE
-	MAGENTA='\e[1;35m'
-NC='\e[0m'
 	echo -e "	Please collect the health status report from ${MAGENTA}${HOME_DIR}/${FILE_NAME}${NC}"
 	echo -e $DRAW_LINE
 	echo
