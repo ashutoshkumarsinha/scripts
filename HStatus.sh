@@ -2,7 +2,7 @@
 ##############################################################
 # Nokia Networks (c) 2014, All rights reserved               #
 #                                                            #
-# CSCF Health Check Script v3.0                              #
+# CSCF Health Check Script v4.0                              #
 #                                                            #
 # Author:  Ashutosh Kumar Sinha                              #
 #                                                            #
