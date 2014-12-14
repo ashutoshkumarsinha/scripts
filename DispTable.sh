@@ -272,21 +272,21 @@ function cleanup() {
 function displayMenu() {
 		clear
 		echo
-		echo "---------------------------------------------------------------------------"
-		echo "----------------------- Config Table Display Script -----------------------"
-		echo "---------------------------------------------------------------------------"
+		echo "	--------------------------------------------------------------------------------"
+		echo "	----------------------- CSCF Config Table Display Script -----------------------"
+		echo "	--------------------------------------------------------------------------------"
 		echo
 		echo
-		echo "	Please select the appropriate option from below:"
-		echo "	   A. Display Diameter Connections Table"
-		echo "	   B. Display Diameter Realms Table"
-		echo "	   C. Display Table of S-CSCF Capabilities"
-		echo "	   D. Display AS Pool Table"
-		echo "	   E. Display AS Resource Table"
-		echo "	   F. Display IP Cluster Routing Table"
-		echo "	   Q. Quit"
+		echo "		Please select the appropriate option from below:"
+		echo "	   		A. Display Table of Diameter Connections"
+		echo "	   		B. Display Table of Diameter Realms"
+		echo "	   		C. Display Table of S-CSCF Capabilities"
+		echo "	   		D. Display Table of Application Server Pools"
+		echo "	   		E. Display Table of Application Server Resources"
+		echo "	   		F. Display Table of IP Cluster Routing"
+		echo "	   		Q. Quit"
 		echo
-		read -e -p "	Enter option [A|B|C|D|E|F|Q]: " OPTI
+		read -e -p "		Enter option [A|B|C|D|E|F|Q]: " OPTI
 
 		finish="-1"
 		while [ "$finish" = '-1' ]
@@ -301,7 +301,7 @@ function displayMenu() {
 					f | F ) OPTI="6";;
 					q | Q ) OPTI="7";;
 					*) finish="-1";
-					read -e -p "	Invalid response; Please reenter option [A|B|C|D|E|F|Q]: " OPTI;;
+					read -e -p "		Invalid response; Please reenter option [A|B|C|D|E|F|Q]: " OPTI;;
 		        esac
 		done
 
