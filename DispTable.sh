@@ -55,8 +55,8 @@ function intialization() {
 	MESSAGE1="\t\t------------------------ ${GREEN}Press any key to continue${NC} ------------------------"
 }
 
-# Command manipulation
-function maniCommands() {
+# Command Execution
+function execCommands() {
 	while [  $COUNTD -gt 1 ]; do
         echo -e "\n"
         let COUNTD=COUNTD-1 
@@ -148,7 +148,6 @@ function diaRealmsTable() {
 	displayMenu
 }
 
-
 # Displays Table of S-CSCF Capabilities
 function tableOfSCSCF() {
 	echo
@@ -175,7 +174,6 @@ function tableOfSCSCF() {
 	read -e -p "$MESSAGE1" OPT2
 	displayMenu
 }
-
 
 # Displays AS Pool Table
 function asPoolTable() {
@@ -344,7 +342,7 @@ function mainFunc() {
 		exit
 	else
 		clear
-		maniCommands
+		execCommands
 		displayMenu
 	fi
 }
