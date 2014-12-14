@@ -16,40 +16,40 @@
 # Parameter Initialization
 function intialization() {
 
-# Colour definition
-RED='\e[1;31m'
-GREEN='\e[1;32m'
-BLUE='\e[1;34m'
-GRAY='\e[1;37m'
-BROWN='\e[1;33m'
-MAGENTA='\e[1;35m'
-NC='\e[0m'
+	# Colour definition
+	RED='\e[1;31m'
+	GREEN='\e[1;32m'
+	BLUE='\e[1;34m'
+	GRAY='\e[1;37m'
+	BROWN='\e[1;33m'
+	MAGENTA='\e[1;35m'
+	NC='\e[0m'
 
-# Constant definition
-HNAME=`hostname`
-UNAME=`whoami`
-DATE_DISP=`date +'%m-%d-%y'`
-COUNTD="10"
+	# Constant definition
+	HNAME=`hostname`
+	UNAME=`whoami`
+	DATE_DISP=`date +'%m-%d-%y'`
+	COUNTD="10"
 
-# Configuration parameters
-HOME_DIR="/tmp"
-M_MEM="90"
-C_CPU="60"
-H0="General Status"
-H1="SIP Connection Status"
-H2="Diameter Connection Status"
-H3="FEE Connection Status"
-H4="BGW Connection Status"
-H5="NTP Status"
-H6="Memory Information"
-H7="Disk Information"
-H8="Cluster Status"
-H9="CPU Status"
-FILE_NAME="${HNAME}_Health_Status_Report_${DATE_DISP}.txt"
-DRAW_LINE="${brown}--------------------------------------------------------------------------------------------------------------------------${NC}"
-MESSAGE1="\tPlease collect the health status report from ${MAGENTA}${HOME_DIR}/${FILE_NAME}${NC}"
-ABORT1="\t${RED}Script execution cancelled....${NC}"
-ABORT2="${GRAY}This script should be executed as root user. You are trying to execute it as ${UNAME} user.${NC}"
+	# Configuration parameters
+	HOME_DIR="/tmp"
+	M_MEM="90"
+	C_CPU="60"
+	H0="General Status"
+	H1="SIP Connection Status"
+	H2="Diameter Connection Status"
+	H3="FEE Connection Status"
+	H4="BGW Connection Status"
+	H5="NTP Status"
+	H6="Memory Information"
+	H7="Disk Information"
+	H8="Cluster Status"
+	H9="CPU Status"
+	FILE_NAME="${HNAME}_Health_Status_Report_${DATE_DISP}.txt"
+	DRAW_LINE="${brown}--------------------------------------------------------------------------------------------------------------------------${NC}"
+	MESSAGE1="\tPlease collect the health status report from ${MAGENTA}${HOME_DIR}/${FILE_NAME}${NC}"
+	ABORT1="\t${RED}Script execution cancelled....${NC}"
+	ABORT2="${GRAY}This script should be executed as root user. You are trying to execute it as ${UNAME} user.${NC}"
 }
 
 # Command manipulation
