@@ -24,6 +24,7 @@ NC='\e[0m'
 
 # Constant definition
 HNAME=`hostname`
+UNAME=`whoami`
 DATE_DISP=`date +'%m-%d-%y'`
 
 # Configuration parameters
@@ -42,9 +43,10 @@ H7="Disk Information"
 H8="Cluster Status"
 H9="CPU Status"
 FILE_NAME="${HNAME}_Health_Status_Report_${DATE_DISP}.txt"
-PORT_DESCRIPTION="${GREY}Protocol            Source IP                   Destination IP              Status      Process Name${NC}"
-PORT_DESCRIPTION1="${GREY}Protocol            Source IP                   Destination IP              Status${NC}"
 DRAW_LINE="${brown}--------------------------------------------------------------------------------------------------------------------------${NC}"
+MESSAGE1="\tPlease collect the health status report from ${MAGENTA}${HOME_DIR}/${FILE_NAME}${NC}"
+ABORT1="\t${RED}Script execution cancelled....${NC}"
+ABORT2="${GRAY}This script should be executed as root user. You are trying to execute it as ${UNAME} user.${NC}"
 }
 
 # Command manipulation
@@ -131,14 +133,14 @@ if [ "$NODESTATUS" != "Secondary" ]; then
 echo
 echo -e "                                            ${BLUE}${H1}${NC}"
 echo -e $DRAW_LINE
-echo -e $PORT_DESCRIPTION
+printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
 echo -e $DRAW_LINE
 netstat -anpT | egrep '50[6789][01]' | egrep 'IMS_P_IpDp_Co|IMS_P_IpDp_Gm' | egrep 'tcp|udp' | sort
 echo -e $DRAW_LINE
 echo
 echo -e "                                          ${BLUE}${H2}${NC}"
 echo -e $DRAW_LINE
-echo -e $PORT_DESCRIPTION
+printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
 echo -e $DRAW_LINE
 netstat -anpT | egrep '386[89]' | egrep 'IMS_DID0|IMS_FEE_' | sort
 echo -e $DRAW_LINE
@@ -150,7 +152,7 @@ function feeStatus() {
 echo
 echo -e "                                            ${BLUE}${H3}${NC}"
 echo -e $DRAW_LINE
-echo -e $PORT_DESCRIPTION
+printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
 echo -e $DRAW_LINE
 netstat -anpT | egrep '608[678]' | egrep 'IMS_FEE_'
 echo -e $DRAW_LINE
@@ -161,7 +163,7 @@ function bgwStatus() {
 echo
 echo -e "                                            ${BLUE}${H4}${NC}"
 echo -e $DRAW_LINE
-echo -e $PORT_DESCRIPTION1
+printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus${NC}\n"
 echo -e $DRAW_LINE
 netstat -anpT | grep 2944 | grep 'sctp'
 echo -e $DRAW_LINE
@@ -233,26 +235,32 @@ function clusterStatus() {
 function mainFunc() {
     clear
 	intialization
-	maniCommands
-	clear
-	genStatus > $HOME_DIR/$FILE_NAME
-	sipDiaStatus >> $HOME_DIR/$FILE_NAME
-	feeStatus >> $HOME_DIR/$FILE_NAME
-	bgwStatus >> $HOME_DIR/$FILE_NAME
-	ntpStatus >> $HOME_DIR/$FILE_NAME
-	cpuStatus >> $HOME_DIR/$FILE_NAME
-	ramStatus >> $HOME_DIR/$FILE_NAME
-	diskStatus >> $HOME_DIR/$FILE_NAME
-	clusterStatus >> $HOME_DIR/$FILE_NAME
-	clear
-	cat $HOME_DIR/$FILE_NAME
-	echo
-	echo
-	echo -e $DRAW_LINE
-	echo -e "	Please collect the health status report from ${MAGENTA}${HOME_DIR}/${FILE_NAME}${NC}"
-	echo -e $DRAW_LINE
-	echo
-	echo
+	if [ $UNAME != "root" ]; then
+		echo -e $ABORT1
+		echo -e $ABORT2
+		exit
+	else
+		maniCommands
+		clear
+		genStatus > $HOME_DIR/$FILE_NAME
+		sipDiaStatus >> $HOME_DIR/$FILE_NAME
+		feeStatus >> $HOME_DIR/$FILE_NAME
+		bgwStatus >> $HOME_DIR/$FILE_NAME
+		ntpStatus >> $HOME_DIR/$FILE_NAME
+		cpuStatus >> $HOME_DIR/$FILE_NAME
+		ramStatus >> $HOME_DIR/$FILE_NAME
+		diskStatus >> $HOME_DIR/$FILE_NAME
+		clusterStatus >> $HOME_DIR/$FILE_NAME
+		clear
+		cat $HOME_DIR/$FILE_NAME
+		echo
+		echo
+		echo -e $DRAW_LINE
+		echo -e $MESSAGE1
+		echo -e $DRAW_LINE
+		echo
+		echo
+	fi
 }
 
 mainFunc
