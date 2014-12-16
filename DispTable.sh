@@ -33,7 +33,8 @@ function intialization() {
 	D_OPT="4";
 	E_OPT="5";
 	F_OPT="6";
-	Q_OPT="7";
+	G_OPT="7";
+	Q_OPT="8";
 
 	# Configuration parameters
 	HOME_DIR="/tmp";
@@ -43,18 +44,21 @@ function intialization() {
 	F4="aspool";
 	F5="asresource";
 	F6="iproutes";
+	F7="dynamiciproutes";
 	H1="DIAMETER CONNECTIONS TABLE";
 	H2="DIAMETER REALMS TABLE";
 	H3="TABLE OF S-CSCF CAPABILITIES";
 	H4="AS POOL TABLE";
 	H5="AS RESOURCES TABLE";
 	H6="IP CLUSTER ROUTING TABLE";
+	H7="DYNAMIC IP CLUSTER ROUTING TABLE";
 	DRAW_LINE1="${brown}-------------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE2="${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE3="${brown}-------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE4="${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE5="${brown}---------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
-	DRAW_LINE6="${brown}------------------------------------------------------------------------------------------------------------------${NC}";
+	DRAW_LINE6="${brown}------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
+	DRAW_LINE7="${brown}-----------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE11="%10s -------------------------------------------------------------------------------- \n";
 	DRAW_LINE12="%10s ----------------------- CSCF Config Table Display Script ----------------------- \n";
 	TEXT1="%14s Please select the appropriate option from below: \n";
@@ -64,7 +68,8 @@ function intialization() {
 	TEXT5="%17s D. Display Table of Application Server Pools \n";
 	TEXT6="%17s E. Display Table of Application Server Resources \n";
 	TEXT7="%17s F. Display Table of IP Cluster Routing \n";
-	TEXT8="%17s Q. Quit \n";
+	TEXT8="%17s G. Display Table of Dynamic IP Cluster Routing \n";
+	TEXT9="%17s Q. Quit \n";
 	ABORT1="\t${RED}Script execution cancelled....${NC} \n";
 	ABORT2="${GRAY}This script should be executed as root user. You are trying to execute it as ${UNAME} user.${NC} \n";
 	MESSAGE1=" Press any key to continue...";
@@ -90,7 +95,9 @@ function execCommands() {
 	echo -ne '						[##################        ] (71%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST platform/cframe IP_CLUSTER_ROUTING" | cut -d. -f2- > $HOME_DIR/$F6;
 	echo -ne '						[#####################     ] (83%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST platform/cframe IP_DYNAMIC_ROUTING" | cut -d. -f2- > $HOME_DIR/$F7;
 	echo -ne '						[#######################   ] (92%)\r'
+
 	echo -ne '						[##########################] (100%)\r'
 	echo -ne '\n'
 }
@@ -110,7 +117,7 @@ function diaConTable() {
 			echo -e "$DRAW_LINE1";
 		fi
 		test=`echo $line | cut -d= -f1`;
- 		if [ "$test" == "ConnectionID" ]; then ConnectionID=`echo $line | cut -d= -f2`; fi
+ 		if [ "$test" == "ConnectionID" ]; then ConnectionID=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "LogicalName" ]; then LogicalName=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "SourceAddress" ]; then SourceAddress=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "SourceHostname" ]; then SourceHostname=`echo $line | cut -d= -f2-`; fi
@@ -209,7 +216,7 @@ function asPoolTable() {
 			echo -e "$DRAW_LINE4";
 		fi
 		test=`echo $line | cut -d= -f1`;
-		if [ "$test" == "PoolName" ]; then Name=`echo $line | cut -d= -f2`; fi
+		if [ "$test" == "PoolName" ]; then Name=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "PoolType" ]; then Type=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "FailResponseType" ]; then FailResp=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "FailureThreshold" ]; then FailThr=`echo $line | cut -d= -f2-`; fi
@@ -240,7 +247,7 @@ function asResourceTable() {
 			echo -e "$DRAW_LINE5";
 		fi
 		test=`echo $line | cut -d= -f1`;
-		if [ "$test" == "PoolName" ]; then PoolName=`echo $line | cut -d= -f2`; fi
+		if [ "$test" == "PoolName" ]; then PoolName=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "Address" ]; then Address=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "Priority" ]; then Priority=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "Weight" ]; then Weight=`echo $line | cut -d= -f2-`; fi
@@ -267,16 +274,18 @@ function ipClusterRoutingTable() {
 		if [ "$flag" == "true" ]; then
 			flag="false";
 			echo -e "$DRAW_LINE6";
-			printf "%-35s %-15s %-35s %-40s \t\n" "DESTINATION" "NETMASK" "GATEWAY" "DESCRIPTION";
+			printf "%-35s %-15s %-35s %-20s %-40s \t\n" "DESTINATION" "NETMASK" "GATEWAY" "DEVICE" "DESCRIPTION";
 			echo -e "$DRAW_LINE6";
 		fi
 		test=`echo $line | cut -d= -f1`;
 		if [ "$test" == "DESTINATION" ]; then Destination=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "NETMASK" ]; then Netmask=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "GATEWAY" ]; then Gateway=`echo $line | cut -d= -f2-`; fi
+		if [ "$test" == "DEVICE" ]; then Device=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "DESCRIPTION" ]; then Description=`echo $line | cut -d= -f2`; fi
 		if [ "$test" == "DESCRIPTION" ]; then
-			printf "%-35s %-15s %-35s %-40s \t\n" $Destination $Netmask $Gateway $Description;
+			printf "%-35s %-15s %-35s %-20s" $Destination $Netmask $Gateway $Device;
+			echo -e $Description;
 		fi
 	done < $HOME_DIR/$F6;
 	echo -e "$DRAW_LINE6";
@@ -284,6 +293,39 @@ function ipClusterRoutingTable() {
 	echo
 	read -e -p "$MESSAGE1" OPT2
 	displayMenu
+}
+
+# Displays Dynamic IP Cluster Routing Table
+function DynIpClusterRoutingTable() {
+	echo
+	echo -e "\t\t\t\t\t\t ${BLUE}${H7}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE7";
+			printf "%-15s %-10s %-15s %-15s %-15s %-40s \t\n" "DESTINATION" "NODE ID" "NETMASK" "SOURCE" "GATEWAY" "DEVICE" "DESCRIPTION";
+			echo -e "$DRAW_LINE7";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "DESTINATION" ]; then Destination=`echo $line | cut -d= -f2-`; fi
+		if [ "$test" == "NODE_ID" ]; then Node=`echo $line | cut -d= -f2-`; fi
+		if [ "$test" == "NETMASK" ]; then Netmask=`echo $line | cut -d= -f2-`; fi
+		if [ "$test" == "SOURCE" ]; then Source=`echo $line | cut -d= -f2-`; fi
+		if [ "$test" == "GATEWAY" ]; then Gateway=`echo $line | cut -d= -f2-`; fi
+		if [ "$test" == "DEVICE" ]; then Device=`echo $line | cut -d= -f2-`; fi
+		if [ "$test" == "DESCRIPTION" ]; then Description=`echo $line | cut -d= -f2`; fi
+		if [ "$test" == "DESCRIPTION" ]; then
+				printf "%-15s %-10s %-15s %-15s %-15s " $Destination $Node $Netmask $Source $Gateway $Device;
+				echo -e $Description;
+		fi
+		done < $HOME_DIR/$F7;
+		echo -e "$DRAW_LINE7";
+		echo
+		echo
+		read -e -p "$MESSAGE1" OPT2
+		displayMenu
 }
 
 # Cleanup
@@ -295,6 +337,7 @@ function cleanup() {
 	rm -f $F4;
 	rm -f $F5;
 	rm -f $F6;
+	rm -f $F7;
 }
 
 # Display Menu
@@ -314,8 +357,9 @@ function displayMenu() {
 		printf "$TEXT6";
 		printf "$TEXT7";
 		printf "$TEXT8";
+		printf "$TEXT9";
 		echo
-		read -e -p "		  Enter option [A|B|C|D|E|F|Q]: " OPTI
+		read -e -p "		  Enter option [A|B|C|D|E|F|G|Q]: " OPTI
 
 		finish="-1"
 		while [ "$finish" = '-1' ]
@@ -328,9 +372,10 @@ function displayMenu() {
 					d | D ) OPTI="4";;
 					e | E ) OPTI="5";;
 					f | F ) OPTI="6";;
-					q | Q ) OPTI="7";;
+					g | G ) OPTI="7";;
+					q | Q ) OPTI="8";;
 					*) finish="-1";
-					read -e -p "		  Invalid response; Please reenter option [A|B|C|D|E|F|Q]: " OPTI;;
+					read -e -p "		  Invalid response; Please reenter option [A|B|C|D|E|F|G|Q]: " OPTI;;
 		        esac
 		done
 
@@ -352,6 +397,9 @@ function displayMenu() {
 		elif [ "$OPTI" = "$F_OPT" ]; then
 			clear
 			ipClusterRoutingTable
+		elif [ "$OPTI" = "$G_OPT" ]; then
+			clear
+			DynIpClusterRoutingTable
 		elif [ "$OPTI" = "$Q_OPT" ]; then
 			cleanup
 			clear
