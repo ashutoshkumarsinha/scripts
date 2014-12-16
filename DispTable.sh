@@ -49,10 +49,10 @@ function intialization() {
 	H4="AS Pool Table";
 	H5="AS Resources Table";
 	H6="IP Cluster Routing Table";
-	DRAW_LINE="${brown}--------------------------------------------------------------------------------------------------------------------------${NC}";
+	DRAW_LINE="${brown}-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	ABORT1="\t${RED}Script execution cancelled....${NC}";
 	ABORT2="${GRAY}This script should be executed as root user. You are trying to execute it as ${UNAME} user.${NC}";
-	MESSAGE1="------------------------ Press any key to continue ------------------------";
+	MESSAGE1="		------------------------ Press any key to continue ------------------------";
 }
 
 # Command Execution
@@ -61,7 +61,7 @@ function execCommands() {
         echo -e "\n"
         let COUNTD=COUNTD-1
     done
-	echo -e  '							Generating report...';
+	echo -e  '							Gathering data...';
 	echo -ne '						[##                        ] (3%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/common/diameterdisp  Connections"  | cut -d. -f2- > $HOME_DIR/$F1;
 	echo -ne '						[#####                     ] (17%)\r'
@@ -83,16 +83,17 @@ function execCommands() {
 # Displays Diameter Connections Table
 function diaConTable() {
 	echo
-	echo -e "\t\t\t${BLUE}${H1}${NC}"
-	echo -e $DRAW_LINE
+	echo -e "\t\t\t\t\t\t\t\t ${BLUE}${H1}${NC}"
 	flag="true";
 
 	while read line;
 	do
 		if [ "$flag" == "true" ]; then
 			flag="false";
-			printf "%-17s %-25s \t\t %-30s %-17s %-29s %-17s %-17s %-17s %-17s \t\n" "Connection ID" "Source Hostname" "Source Address" "Source Realm" "Destination Address" "Connection Type" "Connection Kind" "Watchdog" "Reconnect";
-			echo -e "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+			echo -e "${brown}--------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
+			printf "%-17s %-25s \t\t %-30s %-17s %-29s %-17s %-17s \t\n" "Connection" "Source" "Source" "Source" "Destination" "Connection" "Connection";
+			printf "%-17s %-25s \t\t %-30s %-17s %-29s %-17s %-17s \t\n" "ID" "Hostname" "Address" "Realm" "Address" "Type" "Kind";
+			echo -e "${brown}--------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 		fi
 		test=`echo $line | cut -d= -f1`;
  		if [ "$test" == "ConnectionID" ]; then ConnectionID=`echo $line | cut -d= -f2-`; fi
@@ -108,10 +109,12 @@ function diaConTable() {
 		if [ "$test" == "Watchdog" ]; then Watchdog=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "Reconnect" ]; then Reconnect=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "SourceSecAddress" ]; then SourceSecAddress=`echo $line | cut -d= -f2-`; fi
-		if [ "$test" == "SourceSecAddress" ]; then printf "%-17s %-25s \t %-30s %-17s" $ConnectionID $SourceHostname $SourceAddress $SourceRealm;
-			printf "%-30s %-17s %-17s %-17s %-17s \t\n" $DestinationAddress $ConnectionType $ConnectionKind $Watchdog $Reconnect; fi
+		if [ "$test" == "SourceSecAddress" ]; then
+			printf "%-17s %-25s \t %-30s %-17s" $ConnectionID $SourceHostname $SourceAddress $SourceRealm;
+			printf "%-30s %-17s %-17s \t\n" $DestinationAddress $ConnectionType $ConnectionKind;
+		fi
 	done < $HOME_DIR/$F1;
-	echo -e $DRAW_LINE
+	echo -e "${brown}--------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	echo
 	echo
 	read -e -p "$MESSAGE1" OPT2
@@ -121,16 +124,16 @@ function diaConTable() {
 # Displays Diameter Realm Table
 function diaRealmsTable() {
 	echo
-	echo -e "\t\t\t${BLUE}${H2}${NC}"
-	echo -e $DRAW_LINE
+	echo -e "\t\t\t\t\t\t ${BLUE}${H2}${NC}"
 	flag="true";
 
 	while read line;
 	do
 		if [ "$flag" == "true" ]; then
 			flag="false";
+			echo -e "${brown}-------------------------------------------------------------------------------------------------------------------------------${NC}";
 			printf "%-20s %-25s %-17s %-17s \t\t %-17s \t %-17s \t\n"  "Realm ID" "Realm" "Interface ID" "Server" "Priority" "Weight";
-			echo "-----------------------------------------------------------------------------------------------------------------------------------------";
+			echo -e "${brown}-------------------------------------------------------------------------------------------------------------------------------${NC}";
 		fi
 		test=`echo $line | cut -d= -f1`;
 		if [ "$test" == "RealmID" ]; then RealmID=`echo $line | cut -d= -f2-`; fi
@@ -139,9 +142,11 @@ function diaRealmsTable() {
 		if [ "$test" == "Server" ]; then Server=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "Priority" ]; then Priority=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "Weight" ]; then Weight=`echo $line | cut -d= -f2-`; fi
-		if [ "$test" == "Weight" ]; then printf "%-20s %-25s %-17s %-17s \t %-17s \t" $RealmID $Realm $InterfaceID $Server $Priority; echo $Weight; fi
+		if [ "$test" == "Weight" ]; then
+			printf "%-20s %-25s %-17s %-17s \t %-17s \t\n" $RealmID $Realm $InterfaceID $Server $Priority $Weight;
+		fi
 	done < $HOME_DIR/$F2;
-	echo -e $DRAW_LINE
+	echo -e "${brown}-------------------------------------------------------------------------------------------------------------------------------${NC}";
 	echo
 	echo
 	read -e -p "$MESSAGE1" OPT2
@@ -152,23 +157,25 @@ function diaRealmsTable() {
 function tableOfSCSCF() {
 	echo
 	echo -e "\t\t\t${BLUE}${H3}${NC}"
-	echo -e $DRAW_LINE
 	flag="true";
 	while read line;
 	do
 	if [ "$flag" == "true" ]; then
 		flag="false";
+		echo -e "${brown}-------------------------------------------------------------------------------${NC}";
 		printf "%-30s \t %-17s \t %-15s %-15s  \t\n" "SCSCF Name" "SCSCF Capabilities" "Priority" "Weight";
-		echo "------------------------------------------------------------------------------------";
+		echo -e "${brown}-------------------------------------------------------------------------------${NC}";
 	fi
 	test=`echo $line | cut -d= -f1`;
 	if [ "$test" == "ScscfName" ]; then ScscfName=`echo $line | cut -d= -f2-`; fi
 	if [ "$test" == "ScscfCapabilities" ]; then ScscfCapabilities=`echo $line | cut -d= -f2-`; fi
 	if [ "$test" == "ScscfPriority" ]; then ScscfPriority=`echo $line | cut -d= -f2-`; fi
 	if [ "$test" == "ScscfWeight" ]; then ScscfWeight=`echo $line | cut -d= -f2-`; fi
-	if [ "$test" == "ScscfWeight" ]; then printf "%-30s \t %-17s \t %-15s %-15s  \t\n" $ScscfName $ScscfCapabilities $ScscfPriority $ScscfWeight; fi
+	if [ "$test" == "ScscfWeight" ]; then
+		printf "%-30s \t %-17s \t %-15s %-15s  \t\n" $ScscfName $ScscfCapabilities $ScscfPriority $ScscfWeight;
+	fi
 	done < $HOME_DIR/$F3;
-	echo -e $DRAW_LINE
+	echo -e "${brown}-------------------------------------------------------------------------------${NC}";
 	echo
 	echo
 	read -e -p "$MESSAGE1" OPT2
@@ -178,15 +185,15 @@ function tableOfSCSCF() {
 # Displays AS Pool Table
 function asPoolTable() {
 	echo
-	echo -e "\t\t\t${BLUE}${H4}${NC}"
-	echo -e $DRAW_LINE
+	echo -e "\t\t\t\t\t\t ${BLUE}${H4}${NC}"
 	flag="true";
 	while read line;
 	do
 		if [ "$flag" == "true" ]; then
 			flag="false";
-			printf "%-30s %-30s  %-30s  %-17s  \t\n" "Pool Name" "Pool Type" "Failure Resp Type" "Failure Threshold"  "Inactive Revoke Timer"   "Failback Behavior";
-			echo "--------------------------------------------------------------------------------------------------------------------------------";
+			echo -e "${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
+			printf "%-20s %-15s %-20s %-20s %-23s %-20s \t\n" "Pool Name" "Pool Type" "Failure Resp Type" "Failure Threshold" "Inactive Revoke Timer" "Failback Behavior";
+			echo -e "${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
 		fi
 		test=`echo $line | cut -d= -f1`;
 		if [ "$test" == "PoolName" ]; then Name=`echo $line | cut -d= -f2-`; fi
@@ -194,9 +201,13 @@ function asPoolTable() {
 		if [ "$test" == "FailResponseType" ]; then FailResp=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "FailureThreshold" ]; then FailThr=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "InactiveRevokeTimer" ]; then InactTime=`echo $line | cut -d= -f2-`; fi
-		if [ "$test" == "FailbackBehavior" ]; then printf "%-20s %-20s %-20s %-20s %-20s \t" $Name $Type $FailResp $FailThr $InactTime; echo $Description; fi
+		if [ "$test" == "FailbackBehavior" ]; then FailbackBehavior=`echo $line | cut -d= -f2-`; fi
+		if [ "$test" == "FailbackBehavior" ]; then
+			printf "%-20s %-15s %-20s %-20s %-23s %-20s \t\n" $Name $Type $FailResp $FailThr $InactTime $FailbackBehavior;
+	#		echo $Description;
+		fi
 	done < $HOME_DIR/$F4;
-	echo -e $DRAW_LINE
+	echo -e "${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
 	echo
 	echo
 	read -e -p "$MESSAGE1" OPT2
@@ -206,15 +217,15 @@ function asPoolTable() {
 # Displays AS Resource Table
 function asResourceTable() {
 	echo
-	echo -e "\t\t\t${BLUE}${H5}${NC}"
-	echo -e $DRAW_LINE
+	echo -e "\t\t\t\t\t\t\t\t ${BLUE}${H5}${NC}"
 	flag="true";
 	while read line;
 	do
 		if [ "$flag" == "true" ]; then
 			flag="false";
-			printf "%-20s  %-50s %-20s  %-20s  %-20s  \t\n" "Pool Name" "Address" "Priority" "Weight" "State";
-			echo "--------------------------------------------------------------------------------------------------------------------------------";
+			echo -e "${brown}---------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
+			printf "%-15s %-80s %-20s %-20s %-20s \t\n" "Pool Name" "Address" "Priority" "Weight" "State";
+			echo -e "${brown}---------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 		fi
 		test=`echo $line | cut -d= -f1`;
 		if [ "$test" == "PoolName" ]; then PoolName=`echo $line | cut -d= -f2-`; fi
@@ -222,9 +233,12 @@ function asResourceTable() {
 		if [ "$test" == "Priority" ]; then Priority=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "Weight" ]; then Weight=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "State" ]; then State=`echo $line | cut -d= -f2-`; fi
-		if [ "$PoolName" == "LSGW-Pair" ]; then printf "%-20s %-50s %-20s %-20s  \t" $PoolName $Address $Priority $Weight; echo $State; fi
+		if [ "$test" == "State" ]; then
+			printf "%-15s %-80s %-20s %-20s %-20s \t\n" $PoolName $Address $Priority $Weight $State;
+			#			echo $State;
+		fi
 	done < $HOME_DIR/$F5;
-	echo -e $DRAW_LINE
+	echo -e "${brown}---------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	echo
 	echo
 	read -e -p "$MESSAGE1" OPT2
@@ -234,24 +248,26 @@ function asResourceTable() {
 # Displays IP Cluster Routing Table
 function ipClusterRoutingTable() {
 	echo
-	echo -e "\t\t\t${BLUE}${H6}${NC}"
-	echo -e $DRAW_LINE
+	echo -e "\t\t\t\t\t\t ${BLUE}${H6}${NC}"
 	flag="true";
 	while read line;
 	do
 		if [ "$flag" == "true" ]; then
 			flag="false";
-			printf "%-30s %-30s  %-30s  %-17s  \t\n" "DESTINATION" "NETMASK" "GATEWAY" "DESCRIPTION";
-			echo "------------------------------------------------------------------------------------------------------------------";
+			echo -e "${brown}------------------------------------------------------------------------------------------------------------------${NC}";
+			printf "%-35s %-15s %-35s %-40s \t\n" "DESTINATION" "NETMASK" "GATEWAY" "DESCRIPTION";
+			echo -e "${brown}------------------------------------------------------------------------------------------------------------------${NC}";
 		fi
 		test=`echo $line | cut -d= -f1`;
 		if [ "$test" == "DESTINATION" ]; then Destination=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "NETMASK" ]; then Netmask=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "GATEWAY" ]; then Gateway=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "DESCRIPTION" ]; then Description=`echo $line | cut -d= -f2-`; fi
-		if [ "$test" == "DESCRIPTION" ]; then printf "%-30s %-30s %-30s \t" $Destination $Netmask $Gateway; echo $Description; fi
+		if [ "$test" == "DESCRIPTION" ]; then
+			printf "%-35s %-15s %-35s %-40s \t\n" $Destination $Netmask $Gateway $Description;
+		fi
 	done < $HOME_DIR/$F6;
-	echo -e $DRAW_LINE
+	echo -e "${brown}------------------------------------------------------------------------------------------------------------------${NC}";
 	echo
 	echo
 	read -e -p "$MESSAGE1" OPT2
@@ -260,12 +276,13 @@ function ipClusterRoutingTable() {
 
 # Cleanup
 function cleanup() {
-	rm -f $HOME_DIR/$F1;
-	rm -f $HOME_DIR/$F2;
-	rm -f $HOME_DIR/$F3;
-	rm -f $HOME_DIR/$F4;
-	rm -f $HOME_DIR/$F5;
-	rm -f $HOME_DIR/$F6;
+	cd $HOME_DIR
+	rm -f $F1;
+	rm -f $F2;
+	rm -f $F3;
+	rm -f $F4;
+	rm -f $F5;
+	rm -f $F6;
 }
 
 # Display Menu
