@@ -45,7 +45,7 @@ function intialization() {
 	F5="asresource";
 	F6="iproutes";
 	F7="dynamiciproutes";
-	F8="name";
+	F8="sysconnmw";
 	H1="DIAMETER CONNECTIONS TABLE";
 	H2="DIAMETER REALMS TABLE";
 	H3="TABLE OF S-CSCF CAPABILITIES";
@@ -53,7 +53,7 @@ function intialization() {
 	H5="AS RESOURCES TABLE";
 	H6="IP CLUSTER ROUTING TABLE";
 	H7="DYNAMIC IP CLUSTER ROUTING TABLE";
-	H8="TABLE"
+	H8="Mw INTERFACE CONNECTIVITY TABLE"
 	DRAW_LINE1="${brown}-------------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE2="${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE3="${brown}-------------------------------------------------------------------------------------------------------${NC}";
@@ -100,7 +100,11 @@ function execCommands() {
 	echo -ne '						[#####################     ] (83%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST platform/cframe IP_DYNAMIC_ROUTING" | cut -d. -f2- > $HOME_DIR/$F7;
 	echo -ne '						[#######################   ] (92%)\r'
-	#su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/scscf " | cut -d. -f2- > $HOME_DIR/$F8;
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/bgcf System.Connectivity" | cut -d. -f2- | cut -d. -f2- > $HOME_DIR/$F8;
+	echo -ne '						[########################  ] (95%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/icscf System.Connectivity" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F8;
+	echo -ne '						[######################### ] (97%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/scscf System.Connectivity" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F8;
 	echo -ne '						[##########################] (100%)\r'
 	echo -ne '\n'
 }
@@ -200,8 +204,35 @@ function tableOfSCSCF() {
 	echo -e "$DRAW_LINE3";
 	echo
 	echo
-	read -e -p "$MESSAGE1" OPT2
-	displayMenu
+}
+
+# Displays Table of Mw Interface Connectivity
+function sysConnTable() {
+	echo
+	echo -e "\t\t\t\t\t ${BLUE}${H8}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE8";
+			printf "%-17s %-25s %-25s %-20s \t\n" "INTERFACE NAME" "HOSTNAME" "GENERIC HOSTNAME" "DOMAIN NAME";
+			echo -e "$DRAW_LINE8";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "ConnectivityName" ]; then ConnectivityName=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "HostName" ]; then HostName=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "GenericHostName" ]; then GenericHostName=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "DomainName" ]; then DomainName=`echo $line | cut -d= -f2-`; fi
+						if [ "$test" == "DomainName" ]; then
+							printf "%-17s %-25s %-25s %-20s \t\n" $ConnectivityName  $HostName $GenericHostName $DomainName;
+						fi
+					done < $HOME_DIR/$F8;
+					echo -e "$DRAW_LINE8";
+					echo
+					echo
+					read -e -p "$MESSAGE1" OPT2
+					displayMenu
 }
 
 # Displays AS Pool Table
@@ -388,6 +419,7 @@ function displayMenu() {
 		elif [ "$OPTI" = "$C_OPT" ]; then
 			clear
 			tableOfSCSCF
+			sysConnTable
 		elif [ "$OPTI" = "$D_OPT" ]; then
 			clear
 			asPoolTable
