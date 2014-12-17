@@ -45,6 +45,7 @@ function intialization() {
 	F5="asresource";
 	F6="iproutes";
 	F7="dynamiciproutes";
+	F8="name";
 	H1="DIAMETER CONNECTIONS TABLE";
 	H2="DIAMETER REALMS TABLE";
 	H3="TABLE OF S-CSCF CAPABILITIES";
@@ -52,23 +53,25 @@ function intialization() {
 	H5="AS RESOURCES TABLE";
 	H6="IP CLUSTER ROUTING TABLE";
 	H7="DYNAMIC IP CLUSTER ROUTING TABLE";
+	H8="TABLE"
 	DRAW_LINE1="${brown}-------------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE2="${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE3="${brown}-------------------------------------------------------------------------------------------------------${NC}";
-	DRAW_LINE4="${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
+	DRAW_LINE4="${brown}-------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE5="${brown}---------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE6="${brown}------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE7="${brown}-----------------------------------------------------------------------------------------------------------------------------------------------${NC}";
+	DRAW_LINE8="${brown}-----------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE11="%10s -------------------------------------------------------------------------------- \n";
 	DRAW_LINE12="%10s ----------------------- CSCF Config Table Display Script ----------------------- \n";
 	TEXT1="%14s Please select the appropriate option from below: \n";
-	TEXT2="%17s A. Display Table of Diameter Connections \n";
-	TEXT3="%17s B. Display Table of Diameter Realms \n";
+	TEXT2="%17s A. Display Diameter Config \n";
+	TEXT3="%17s B. Display IP Routing Config \n";
 	TEXT4="%17s C. Display Table of S-CSCF Capabilities \n";
-	TEXT5="%17s D. Display Table of Application Server Pools \n";
-	TEXT6="%17s E. Display Table of Application Server Resources \n";
-	TEXT7="%17s F. Display Table of IP Cluster Routing \n";
-	TEXT8="%17s G. Display Table of Dynamic IP Cluster Routing \n";
+	TEXT5="%17s D. Display Application Server Config \n";
+	TEXT6="%17s E. Display  \n";
+	TEXT7="%17s F. Display  \n";
+	TEXT8="%17s G. Display  \n";
 	TEXT9="%17s Q. Quit \n";
 	ABORT1="\t${RED}Script execution cancelled....${NC} \n";
 	ABORT2="${GRAY}This script should be executed as root user. You are trying to execute it as ${UNAME} user.${NC} \n";
@@ -97,7 +100,7 @@ function execCommands() {
 	echo -ne '						[#####################     ] (83%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST platform/cframe IP_DYNAMIC_ROUTING" | cut -d. -f2- > $HOME_DIR/$F7;
 	echo -ne '						[#######################   ] (92%)\r'
-
+	#su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/scscf " | cut -d. -f2- > $HOME_DIR/$F8;
 	echo -ne '						[##########################] (100%)\r'
 	echo -ne '\n'
 }
@@ -137,8 +140,6 @@ function diaConTable() {
 	echo -e "$DRAW_LINE1";
 	echo
 	echo
-	read -e -p "$MESSAGE1" OPT2
-	displayMenu
 }
 
 # Displays Diameter Realm Table
@@ -183,7 +184,7 @@ function tableOfSCSCF() {
 	if [ "$flag" == "true" ]; then
 		flag="false";
 		echo -e "$DRAW_LINE3";
-		printf "%-50s \t %-17s \t %-15s %-15s  \t\n" "SCSCF NAME" "SCSCF CAPABILITIES" "PRIORITY" "WEIGHT";
+		printf "%-52s %-15s %-15s %-16s \t\n" "SCSCF NAME" "PRIORITY" "WEIGHT" "SCSCF CAPABILITIES";
 		echo -e "$DRAW_LINE3";
 	fi
 	test=`echo $line | cut -d= -f1`;
@@ -192,7 +193,8 @@ function tableOfSCSCF() {
 	if [ "$test" == "ScscfPriority" ]; then ScscfPriority=`echo $line | cut -d= -f2-`; fi
 	if [ "$test" == "ScscfWeight" ]; then ScscfWeight=`echo $line | cut -d= -f2-`; fi
 	if [ "$test" == "ScscfWeight" ]; then
-		printf "%-50s \t %-17s \t %-15s %-15s  \t\n" $ScscfName $ScscfCapabilities $ScscfPriority $ScscfWeight;
+		printf "%-52s %-15s %-15s %s " $ScscfName  $ScscfPriority $ScscfWeight;
+		echo -e $ScscfCapabilities
 	fi
 	done < $HOME_DIR/$F3;
 	echo -e "$DRAW_LINE3";
@@ -229,8 +231,6 @@ function asPoolTable() {
 	echo -e "$DRAW_LINE4";
 	echo
 	echo
-	read -e -p "$MESSAGE1" OPT2
-	displayMenu
 }
 
 # Displays AS Resource Table
@@ -254,7 +254,6 @@ function asResourceTable() {
 		if [ "$test" == "State" ]; then State=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "State" ]; then
 			printf "%-15s %-80s %-20s %-20s %-20s \t\n" $PoolName $Address $Priority $Weight $State;
-			#			echo $State;
 		fi
 	done < $HOME_DIR/$F5;
 	echo -e "$DRAW_LINE5";
@@ -291,8 +290,6 @@ function ipClusterRoutingTable() {
 	echo -e "$DRAW_LINE6";
 	echo
 	echo
-	read -e -p "$MESSAGE1" OPT2
-	displayMenu
 }
 
 # Displays Dynamic IP Cluster Routing Table
@@ -305,7 +302,7 @@ function DynIpClusterRoutingTable() {
 		if [ "$flag" == "true" ]; then
 			flag="false";
 			echo -e "$DRAW_LINE7";
-			printf "%-15s %-10s %-15s %-15s %-15s %-40s \t\n" "DESTINATION" "NODE ID" "NETMASK" "SOURCE" "GATEWAY" "DEVICE" "DESCRIPTION";
+			printf "%-15s %-10s %-15s %-15s %-15s %-15s %-40s \t\n" "DESTINATION" "NODE ID" "NETMASK" "SOURCE" "GATEWAY" "DEVICE" "DESCRIPTION";
 			echo -e "$DRAW_LINE7";
 		fi
 		test=`echo $line | cut -d= -f1`;
@@ -317,7 +314,7 @@ function DynIpClusterRoutingTable() {
 		if [ "$test" == "DEVICE" ]; then Device=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "DESCRIPTION" ]; then Description=`echo $line | cut -d= -f2`; fi
 		if [ "$test" == "DESCRIPTION" ]; then
-				printf "%-15s %-10s %-15s %-15s %-15s " $Destination $Node $Netmask $Source $Gateway $Device;
+				printf "%-15s %-10s %-15s %-15s %-15s %-15s " $Destination $Node $Netmask $Source $Gateway $Device;
 				echo -e $Description;
 		fi
 		done < $HOME_DIR/$F7;
@@ -338,6 +335,7 @@ function cleanup() {
 	rm -f $F5;
 	rm -f $F6;
 	rm -f $F7;
+	rm -f $F8;
 }
 
 # Display Menu
@@ -382,24 +380,27 @@ function displayMenu() {
 		if [ "$OPTI" = "$A_OPT" ]; then
 			clear
 			diaConTable
+			diaRealmsTable
 		elif [ "$OPTI" = "$B_OPT" ]; then
 			clear
-			diaRealmsTable
+			ipClusterRoutingTable
+			DynIpClusterRoutingTable
 		elif [ "$OPTI" = "$C_OPT" ]; then
 			clear
 			tableOfSCSCF
 		elif [ "$OPTI" = "$D_OPT" ]; then
 			clear
 			asPoolTable
+			asResourceTable
 		elif [ "$OPTI" = "$E_OPT" ]; then
 			clear
-			asResourceTable
+
 		elif [ "$OPTI" = "$F_OPT" ]; then
 			clear
-			ipClusterRoutingTable
+
 		elif [ "$OPTI" = "$G_OPT" ]; then
 			clear
-			DynIpClusterRoutingTable
+
 		elif [ "$OPTI" = "$Q_OPT" ]; then
 			cleanup
 			clear
