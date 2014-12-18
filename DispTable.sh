@@ -278,7 +278,7 @@ function asResourceTable() {
 		if [ "$flag" == "true" ]; then
 			flag="false";
 			echo -e "$DRAW_LINE5";
-			printf "%-15s %-80s %-20s %-20s %-20s \t\n" "POOL NAME" "ADDRESS" "PRIORITY" "WEIGHT" "STATE";
+			printf "%-15s %-20s %-20s %-20s %-80s \t\n" "POOL NAME" "PRIORITY" "WEIGHT" "STATE" "ADDRESS";
 			echo -e "$DRAW_LINE5";
 		fi
 		test=`echo $line | cut -d= -f1`;
@@ -288,7 +288,7 @@ function asResourceTable() {
 		if [ "$test" == "Weight" ]; then Weight=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "State" ]; then State=`echo $line | cut -d= -f2-`; fi
 		if [ "$test" == "State" ]; then
-			printf "%-15s %-80s %-20s %-20s %-20s \t\n" $PoolName $Address $Priority $Weight $State;
+			printf "%-15s %-20s %-20s %-20s %-80s \t\n" $PoolName $Priority $Weight $State $Address;
 		fi
 	done < $HOME_DIR/$F5;
 	echo -e "$DRAW_LINE5";
