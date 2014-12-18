@@ -46,7 +46,17 @@ function intialization() {
 	F6="iproutes";
 	F7="dynamiciproutes";
 	F8="sharedifc";
-	F9="mwsysconn";
+	F9="mwconn";
+	F10="bgw";
+	F11="profile";
+	F12="realmtobgw";
+	F13="dscppolicing";
+	F14="realm";
+	F15="gqfeatureselection";
+	F16="pdflist";
+	F17="pdfpcrf";
+	F18="codecbandwidthlist";
+	F19="acessnetwork";
 	H1="DIAMETER CONNECTIONS TABLE";
 	H2="DIAMETER REALMS TABLE";
 	H3="TABLE OF S-CSCF CAPABILITIES";
@@ -56,6 +66,16 @@ function intialization() {
 	H7="DYNAMIC IP CLUSTER ROUTING TABLE";
 	H8="SHARED iFC TABLE";
 	H9="Mw INTERFACE CONNECTIVITY TABLE";
+	H10="REALM TABLE";
+	H11="BGW TABLE";
+	H12="PROFILE TABLE";
+	H13="REALM TO BGW TABLE";
+	H14="DSCP POLICING TABLE";
+	H15="Gq FEATURE SELECTION TABLE";
+	H16="PDF LIST";
+	H17="PDF PCRF TABLE";
+	H18="CODEC BANDWIDTH LIST";
+	H19="ACCESS NETWORK TABLE";
 	DRAW_LINE1="${brown}-------------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE2="${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE3="${brown}-------------------------------------------------------------------------------------------------------${NC}";
@@ -64,6 +84,14 @@ function intialization() {
 	DRAW_LINE6="${brown}------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE7="${brown}-----------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE8="${brown}-----------------------------------------------------------------------------------------------------------------------------------------------${NC}";
+	DRAW_LINE9="${brown}----------------------------------${NC}";
+	DRAW_LINE10="${brown}-----------------${NC}";
+	DRAW_LINE13="${brown}------------------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
+	DRAW_LINE14="${brown}-------------------------------------------------------------------------------------${NC}";
+	DRAW_LINE15="${brown}-----------------------------------------------------------------------${NC}";
+	DRAW_LINE16="${brown}-------------------------------------------------------------------------${NC}";
+	DRAW_LINE17="${brown}----------------------${NC}";
+	DRAW_LINE18="${brown}---------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE11="%10s -------------------------------------------------------------------------------- \n";
 	DRAW_LINE12="%10s ----------------------- CSCF Config Table Display Script ----------------------- \n";
 	TEXT1="%14s Please select the appropriate option from below: \n";
@@ -71,8 +99,8 @@ function intialization() {
 	TEXT3="%17s B. Display IP Routing Config \n";
 	TEXT4="%17s C. Display Table of S-CSCF Capabilities \n";
 	TEXT5="%17s D. Display Application Server Config \n";
-	TEXT6="%17s E. Display  \n";
-	TEXT7="%17s F. Display  \n";
+	TEXT6="%17s E. Display BGW Config \n";
+	TEXT7="%17s F. Display PCRF Config \n";
 	TEXT8="%17s G. Display  \n";
 	TEXT9="%17s Q. Quit \n";
 	ABORT1="\t${RED}Script execution cancelled....${NC} \n";
@@ -87,28 +115,52 @@ function execCommands() {
         let COUNTD=COUNTD-1
     done
 	echo -e  '							Gathering data...';
-	echo -ne '						[##                        ] (3%)\r'
+	echo -ne '						[#                         ] (3%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/common/diameterdisp  Connections"  | cut -d. -f2- > $HOME_DIR/$F1;
-	echo -ne '						[#####                     ] (17%)\r'
+	echo -ne '						[##                        ] (6%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/common/diameterdisp Realms"  | cut -d. -f2- > $HOME_DIR/$F2;
-	echo -ne '						[########                  ] (38%)\r'
+	echo -ne '						[###                       ] (10%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/icscf System.TableOfScscfs"  | cut -d. -f2- | cut -d. -f2- > $HOME_DIR/$F3;
-	echo -ne '						[#############             ] (52%)\r'
+	echo -ne '						[####                      ] (13%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/scscf ResourceManagement.ASPool " | cut -d. -f3- > $HOME_DIR/$F4;
-	echo -ne '						[################          ] (63%)\r'
+	echo -ne '						[#####                     ] (17%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/scscf ResourceManagement.ASResource" | cut -d. -f3- > $HOME_DIR/$F5;
-	echo -ne '						[##################        ] (71%)\r'
+	echo -ne '						[######                    ] (21%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST platform/cframe IP_CLUSTER_ROUTING" | cut -d. -f2- > $HOME_DIR/$F6;
-	echo -ne '						[#####################     ] (83%)\r'
+	echo -ne '						[#######                   ] (26%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST platform/cframe IP_DYNAMIC_ROUTING" | cut -d. -f2- > $HOME_DIR/$F7;
-	echo -ne '						[######################    ] (92%)\r'
+	echo -ne '						[########                  ] (32%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/scscf ServiceProfile.SharediFCList" | cut -d. -f2- | cut -d. -f2- > $HOME_DIR/$F8;
-	echo -ne '						[#######################   ] (95%)\r'
+	echo -ne '						[#########                 ] (37%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/bgcf System.Connectivity" | cut -d. -f2- | cut -d. -f2- > $HOME_DIR/$F9;
-	echo -ne '						[########################  ] (97%)\r'
+	echo -ne '						[##########                ] (42%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/icscf System.Connectivity" | cut -d. -f2- | cut -d. -f2->> $HOME_DIR/$F9;
-	echo -ne '						[######################### ] (99%)\r'
+	echo -ne '						[###########               ] (47%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/scscf System.Connectivity" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F9;
+	echo -ne '						[############              ] (53%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/bc PDFSupport.BGWTable" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F10;
+	echo -ne '						[#############             ] (59%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/bc PDFSupport.H248Profiles" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F11;
+	echo -ne '						[##############            ] (64%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/bc PDFSupport.RealmToBGW" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F12;
+	echo -ne '						[###############           ] (68%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/bc PDFSupport.DSCPPolicing" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F13;
+	echo -ne '						[################          ] (70%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/bc PDFSupport.Realms" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F14;
+	echo -ne '						[#################         ] (73%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/pcscf PDFSupport.GqFeatureSelection" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F15;
+	echo -ne '						[##################        ] (77%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/pcscf PDFSupport.PDFList" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F16;
+	echo -ne '						[###################       ] (80%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/pcscf PDFSupport.PdfPcrf" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F17;
+	echo -ne '						[####################      ] (83%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/pcscf PDFSupport.CodecBandwidthList" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F18;
+	echo -ne '						[#####################     ] (87%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/pcscf System.AccessNetworks" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F19;
+	echo -ne '						[######################    ] (90%)\r'
+	echo -ne '						[#######################   ] (92%)\r'
+	echo -ne '						[########################  ] (95%)\r'
+	echo -ne '						[######################### ] (97%)\r'
 	echo -ne '						[##########################] (100%)\r'
 	echo -ne '\n'
 }
@@ -185,7 +237,7 @@ function diaRealmsTable() {
 # Displays Table of S-CSCF Capabilities
 function tableOfSCSCF() {
 	echo
-	echo -e "\t\t\t\t\t ${BLUE}${H3}${NC}"
+	echo -e "\t\t\t\t ${BLUE}${H3}${NC}"
 	flag="true";
 	while read line;
 	do
@@ -391,6 +443,295 @@ function DynIpClusterRoutingTable() {
 		displayMenu
 }
 
+# Displays Realm Table
+function realmTable() {
+	echo
+	echo -e "\t\t\t\t\t\t\t\t ${BLUE}${H10}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE13";
+			printf "%-11s %-17s %-17s %-24s %-24s %-20s %-15s %-15s %-11s %-15s \t\n" "REALM ID" "REALM NAME" "INTERFACE NAME" "SOURCE ADDR FILTERING" "SOURCE PORT FILTERING" "RATE LIMITATION" "DSCP CONTROL" "REALM TYPE" "GROUP ID" "IP REALM ID";
+			echo -e "$DRAW_LINE13";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "RealmId" ]; then RealmId=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "RealmName" ]; then RealmName=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "InterfaceName" ]; then InterfaceName=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "SourceAddressFiltering" ]; then SourceAddressFiltering=`echo $line | cut -d= -f2-`; fi
+						if [ "$test" == "SourcePortFiltering" ]; then SourcePortFiltering=`echo $line | cut -d= -f2-`; fi
+							if [ "$test" == "RateLimitation" ]; then RateLimitation=`echo $line | cut -d= -f2-`; fi
+								if [ "$test" == "DSCPControl" ]; then DSCPControl=`echo $line | cut -d= -f2-`; fi
+									if [ "$test" == "RealmType" ]; then RealmType=`echo $line | cut -d= -f2-`; fi
+										if [ "$test" == "GroupId" ]; then GroupId=`echo $line | cut -d= -f2-`; fi
+											if [ "$test" == "IPRealmID" ]; then IPRealmID=`echo $line | cut -d= -f2-`; fi
+												if [ "$test" == "IPRealmID" ]; then
+													printf "%-11s %-17s %-17s %-24s %-24s %-20s %-15s %-15s %-11s %-15s \t\n" $RealmId $RealmName $InterfaceName $SourceAddressFiltering $SourcePortFiltering $RateLimitation $DSCPControl $RealmType $GroupId $IPRealmID;
+												fi
+											done < $HOME_DIR/$F14;
+											echo -e "$DRAW_LINE13";
+											echo
+											echo
+}
+
+# Displays BGW Table
+function bgwTable() {
+	echo
+	echo -e "\t\t\t\t\t\t\t\t ${BLUE}${H11}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE5";
+			printf "%-18s %-10s %-16s %-11s %-17s %-12s %-21s %-9s %-50s \t\n" "IP ADDR" "PORT" "LISTENER PORT" "PROTOCOL" "MEGACO VERSION" "PROFILE ID" "MULTIHOMING IP ADDR" "WEIGHT" "HOSTNAME";
+			echo -e "$DRAW_LINE5";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "IPAddress" ]; then IPAddress=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "Port" ]; then Port=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "ListenerPort" ]; then ListenerPort=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "TransportProtocol" ]; then TransportProtocol=`echo $line | cut -d= -f2-`; fi
+						if [ "$test" == "HostName" ]; then HostName=`echo $line | cut -d= -f2-`; fi
+							if [ "$test" == "MegacoVersion" ]; then MegacoVersion=`echo $line | cut -d= -f2-`; fi
+								if [ "$test" == "ProfileId" ]; then ProfileId=`echo $line | cut -d= -f2-`; fi
+									if [ "$test" == "IPAddressMultihoming" ]; then IPAddressMultihoming=`echo $line | cut -d= -f2-`; fi
+										if [ "$test" == "Weight" ]; then Weight=`echo $line | cut -d= -f2-`; fi
+											if [ "$test" == "Weight" ]; then
+												printf "%-18s %-10s %-16s %-11s %-17s %-12s %-21s %-9s %-50s \t\n" $IPAddress $Port $ListenerPort $TransportProtocol $MegacoVersion $ProfileId $IPAddressMultihoming $Weight $HostName;
+											fi
+										done < $HOME_DIR/$F10;
+										echo -e "$DRAW_LINE5";
+										echo
+										echo
+}
+
+# Displays H248 Profile Table
+function profileTable() {
+	echo
+	echo -e "\t\t\t\t\t\t\t\t ${BLUE}${H12}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE5";
+			printf "%-13s %-15s %-10s %-19s %-50s %-19s \t\n" "PROFILE ID" "PROFILE NAME" "VERSION" "MEDIA RELAY MODE" "MANDATORY PACKAGE" "OPTIONAL PACKAGE";
+			echo -e "$DRAW_LINE5";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "ProfileId" ]; then ProfileId=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "ProfileName" ]; then ProfileName=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "Version" ]; then Version=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "MandatoryPackages" ]; then MandatoryPackages=`echo $line | cut -d= -f2-`; fi
+						if [ "$test" == "OptionalPackages" ]; then OptionalPackages=`echo $line | cut -d= -f2-`; fi
+							if [ "$test" == "MediaRelayMode" ]; then MediaRelayMode=`echo $line | cut -d= -f2-`; fi
+								if [ "$test" == "MediaRelayMode" ]; then
+									printf "%-13s %-15s %-10s %-19s %-50s %-19s \t\n" $ProfileId $ProfileName $Version $MediaRelayMode $MandatoryPackages $OptionalPackages;
+								fi
+							done < $HOME_DIR/$F11;
+							echo -e "$DRAW_LINE5";
+							echo
+							echo
+}
+
+# Displays Realm to BGW Table
+function realmToBgwTable() {
+	echo
+	echo -e "${BLUE}${H13}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE10";
+			printf "%-10s %-10s \t\n" "Realm ID" "BGW ID";
+			echo -e "$DRAW_LINE10";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "RealmId" ]; then RealmId=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "BGWId" ]; then BGWId=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "BGWId" ]; then
+					printf "%-10s %-10s \t\n" $RealmId $BGWId;
+				fi
+			done < $HOME_DIR/$F12;
+			echo -e "$DRAW_LINE10";
+			echo
+			echo
+}
+
+# Displays DSCP Policing Table
+function dscpPolicingTable() {
+	echo
+	echo -e "\t ${BLUE}${H14}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE9";
+			printf "%-10s %-12s %-13s \t\n" "Realm ID" "MEDIA TYPE" "DSCP VALUE";
+			echo -e "$DRAW_LINE9";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "RealmId" ]; then RealmId=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "MediaType" ]; then MediaType=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "DSCPValue" ]; then DSCPValue=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "DSCPValue" ]; then
+						printf "%-10s %-12s %-13s \t\n" $RealmId $MediaType $DSCPValue;
+					fi
+				done < $HOME_DIR/$F13;
+				echo -e "$DRAW_LINE9";
+				echo
+				echo
+				read -e -p "$MESSAGE1" OPT2
+				displayMenu
+}
+
+# Displays Gq Feature Selection Table
+function gqFeatureSelectionTable() {
+	echo
+	echo -e "${BLUE}${H15}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE17";
+			printf "%-15s %-11s \t\n" "ACCESS TYPE" "GATING";
+			echo -e "$DRAW_LINE17";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "AccessType" ]; then RealmId=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "Gating" ]; then BGWId=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "Gating" ]; then
+					printf "%-15s %-11s \t\n" $AccessType $Gating;
+				fi
+			done < $HOME_DIR/$F15;
+			echo -e "$DRAW_LINE17";
+			echo
+			echo
+}
+
+# Displays PDF LIST
+function pdfList() {
+	echo
+	echo -e "\t\t\t\t ${BLUE}${H16}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE14";
+			printf "%-40s %-25s %-11s %-9s \t\n" "DOMAIN NAME" "REALM NAME" "STATUS" "PDF ID";
+			echo -e "$DRAW_LINE14";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "domainName" ]; then domainName=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "realmName" ]; then realmName=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "status" ]; then status=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "PDFId" ]; then PDFId=`echo $line | cut -d= -f2-`; fi
+						if [ "$test" == "PDFId" ]; then
+							printf "%-40s %-25s %-11s %-9s \t\n" $domainName $realmName $status $PDFId;
+						fi
+					done < $HOME_DIR/$F16;
+					echo -e "$DRAW_LINE14";
+					echo
+					echo
+					read -e -p "$MESSAGE1" OPT2
+					displayMenu
+}
+
+# Displays PDF PCRF Table
+function pdfPcrfTable() {
+	echo
+	echo -e "\t\t\t ${BLUE}${H17}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE16";
+			printf "%-9s %-30s %-25s %-11s \t\n" "PDF ID" "DOMAIN NAME" "REALM NAME" "STATUS";
+			echo -e "$DRAW_LINE16";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "PDFId" ]; then PDFId=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "domainName" ]; then domainName=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "realmName" ]; then realmName=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "status" ]; then status=`echo $line | cut -d= -f2-`; fi
+						if [ "$test" == "status" ]; then
+							printf "%-9s %-30s %-25s %-11s \t\n"  $PDFId $domainName $realmName $status;
+						fi
+					done < $HOME_DIR/$F17;
+					echo -e "$DRAW_LINE16";
+					echo
+					echo
+}
+
+# Displays Codec Bandwidth List
+function codecBandwidthList() {
+	echo
+	echo -e "\t\t\t ${BLUE}${H18}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE15";
+			printf "%-15s %-15s %-15s %-13s %-12s \t\n" "CODEC NAME" "MEDIA TYPE" "PAYLOAD TYPE" "CLOCK RATE" "BANDWIDTH";
+			echo -e "$DRAW_LINE15";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "codec_name" ]; then codec_name=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "media_type" ]; then media_type=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "payload_type" ]; then payload_type=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "clockrate" ]; then clockrate=`echo $line | cut -d= -f2-`; fi
+						if [ "$test" == "bandwidth" ]; then bandwidth=`echo $line | cut -d= -f2-`; fi
+							if [ "$test" == "bandwidth" ]; then
+								printf "%-15s %-15s %-15s %-13s %-12s \t\n"  $codec_name $media_type $payload_type $clockrate $bandwidth;
+							fi
+						done < $HOME_DIR/$F18;
+						echo -e "$DRAW_LINE15";
+						echo
+						echo
+}
+
+# Displays Access Network Table
+function accessNetworkTable() {
+	echo
+	echo -e "\t\t\t\t\t\t\t ${BLUE}${H19}${NC}"
+	flag="true";
+	while read line;
+	do
+		if [ "$flag" == "true" ]; then
+			flag="false";
+			echo -e "$DRAW_LINE18";
+			printf "%-30s %-10s %-12s %-13s %-17s %-14s %-17s %-12s %-15s %-13s \t\n" "RANGE" "NETWORK" "TLS MODE" "Gq VARIANT" "PCRF SIGNALING" "PRIMARY PDF" "SECONDARY PDF" "GATING" "ACCESS REALM" "CORE REALM";
+			echo -e "$DRAW_LINE18";
+		fi
+		test=`echo $line | cut -d= -f1`;
+		if [ "$test" == "Range" ]; then Range=`echo $line | cut -d= -f2-`; fi
+			if [ "$test" == "Network" ]; then Network=`echo $line | cut -d= -f2-`; fi
+				if [ "$test" == "TLS_Mode" ]; then TLS_Mode=`echo $line | cut -d= -f2-`; fi
+					if [ "$test" == "GqVariant" ]; then GqVariant=`echo $line | cut -d= -f2-`; fi
+						if [ "$test" == "PCRF_Signaling" ]; then PCRF_Signaling=`echo $line | cut -d= -f2-`; fi
+							if [ "$test" == "Primary_PDF" ]; then Primary_PDF=`echo $line | cut -d= -f2-`; fi
+								if [ "$test" == "Secondary_PDF" ]; then Secondary_PDF=`echo $line | cut -d= -f2-`; fi
+									if [ "$test" == "Gating" ]; then Gating=`echo $line | cut -d= -f2-`; fi
+										if [ "$test" == "AccessRealm" ]; then AccessRealm=`echo $line | cut -d= -f2-`; fi
+											if [ "$test" == "CoreRealm" ]; then CoreRealm=`echo $line | cut -d= -f2-`; fi
+												if [ "$test" == "CoreRealm" ]; then
+													printf "%-30s %-10s %-12s %-13s %-17s %-14s %-17s %-12s %-15s %-13s \t\n"  $Range $Network $TLS_Mode $GqVariant $PCRF_Signaling $Primary_PDF $Secondary_PDF $Gating $AccessRealm $CoreRealm;
+												fi
+											done < $HOME_DIR/$F19;
+											echo -e "$DRAW_LINE18";
+											echo
+											echo
+}
+
 # Cleanup
 function cleanup() {
 	cd $HOME_DIR
@@ -403,6 +744,16 @@ function cleanup() {
 	rm -f $F7;
 	rm -f $F8;
 	rm -f $F9;
+	rm -f $F10;
+	rm -f $F11;
+	rm -f $F12;
+	rm -f $F13;
+	rm -f $F14;
+	rm -f $F15;
+	rm -f $F16;
+	rm -f $F17;
+	rm -f $F18;
+	rm -f $F19;
 }
 
 # Display Menu
@@ -463,10 +814,18 @@ function displayMenu() {
 			asResourceTable
 		elif [ "$OPTI" = "$E_OPT" ]; then
 			clear
-
+			realmTable
+			bgwTable
+			profileTable
+			realmToBgwTable
+			dscpPolicingTable
 		elif [ "$OPTI" = "$F_OPT" ]; then
 			clear
-
+			accessNetworkTable
+			gqFeatureSelectionTable
+			pdfPcrfTable
+			codecBandwidthList
+			pdfList
 		elif [ "$OPTI" = "$G_OPT" ]; then
 			clear
 
