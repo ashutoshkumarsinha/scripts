@@ -57,6 +57,8 @@ function intialization() {
 	F17="pdfpcrf";
 	F18="codecbandwidthlist";
 	F19="acessnetwork";
+	F20="ipinterface";
+	
 	H1="DIAMETER CONNECTIONS TABLE";
 	H2="DIAMETER REALMS TABLE";
 	H3="TABLE OF S-CSCF CAPABILITIES";
@@ -76,6 +78,7 @@ function intialization() {
 	H17="PDF PCRF TABLE";
 	H18="CODEC BANDWIDTH LIST";
 	H19="ACCESS NETWORK TABLE";
+	H20="INTERFACE Source IP Address"
 	DRAW_LINE1="${brown}-------------------------------------------------------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE2="${brown}------------------------------------------------------------------------------------------------------------------------${NC}";
 	DRAW_LINE3="${brown}-------------------------------------------------------------------------------------------------------${NC}";
@@ -101,7 +104,7 @@ function intialization() {
 	TEXT5="%17s D. Display Application Server Config \n";
 	TEXT6="%17s E. Display BGW Config \n";
 	TEXT7="%17s F. Display PCRF Config \n";
-	TEXT8="%17s G. Display  \n";
+	TEXT8="%17s G. Display Interface Source IP address Config \n";
 	TEXT9="%17s Q. Quit \n";
 	ABORT1="\t${RED}Script execution cancelled....${NC} \n";
 	ABORT2="${GRAY}This script should be executed as root user. You are trying to execute it as ${UNAME} user.${NC} \n";
@@ -158,6 +161,8 @@ function execCommands() {
 	echo -ne '						[#####################     ] (87%)\r'
 	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/cscf/pcscf System.AccessNetworks" | cut -d. -f2- | cut -d. -f2- >> $HOME_DIR/$F19;
 	echo -ne '						[######################    ] (90%)\r'
+	su - rtp99 -c "AdvCfgTool.sh -noattach -e LISTCNFINST ims/common/imslb  System.IPAddresses"   | cut -d. -f2- | cut -d. -f2- > $HOME_DIR/$F20;
+
 	echo -ne '						[#######################   ] (92%)\r'
 	echo -ne '						[########################  ] (95%)\r'
 	echo -ne '						[######################### ] (97%)\r'
@@ -732,6 +737,32 @@ function accessNetworkTable() {
 											echo
 }
 
+# Displays Source IP for Interfaces
+function interfaceSourceIP() {
+	echo
+	flag="true";
+	while read line;
+	do
+	if [ "$flag" == "true" ]; then
+		flag="false";
+		echo -e "$DRAW_LINE3";
+		printf "%-52s %-15s \t\n" "Interface Name" "Source IP";
+		echo -e "$DRAW_LINE3";
+	fi
+	test=`echo $line | cut -d= -f1`;
+	if [ "$test" == "DispatcherType" ]; then DispatcherType=`echo $line | cut -d= -f2-`; fi
+	if [ "$test" == "Address" ]; then Address=`echo $line | cut -d= -f2-`; fi
+	if [ "$test" == "Address" ]; then
+	printf "%-52s %-15s \t\n" $DispatcherType  $Address;
+	fi
+	done < $HOME_DIR/$F20;
+	echo -e "$DRAW_LINE3";
+	echo
+	echo
+	read -e -p "$MESSAGE1" OPT2
+	displayMenu
+}
+
 # Cleanup
 function cleanup() {
 	cd $HOME_DIR
@@ -754,6 +785,7 @@ function cleanup() {
 	rm -f $F17;
 	rm -f $F18;
 	rm -f $F19;
+	rm -f $F20;
 }
 
 # Display Menu
@@ -828,7 +860,7 @@ function displayMenu() {
 			pdfList
 		elif [ "$OPTI" = "$G_OPT" ]; then
 			clear
-
+			interfaceSourceIP
 		elif [ "$OPTI" = "$Q_OPT" ]; then
 			cleanup
 			clear

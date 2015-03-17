@@ -10,6 +10,7 @@
 #          Ashutosh Kumar       11.17.2014 - Second Issue    #
 #          Ashutosh Kumar       11.20.2014 - Third Issue     #
 #          Ashutosh Kumar       12.12.2014 - Fourth Issue    #
+#          Ashutosh Kumar       03.12.2015 - Fifth Issue     #
 #                                                            #
 ##############################################################
 
@@ -45,6 +46,7 @@ function intialization() {
 	H7="Disk Information"
 	H8="Cluster Status"
 	H9="CPU Status"
+	H10="Application Server Pool Status"
 	FILE_NAME="${HNAME}_Health_Status_Report_${DATE_DISP}.txt"
 	DRAW_LINE="${brown}--------------------------------------------------------------------------------------------------------------------------${NC}"
 	MESSAGE1="\tPlease collect the health status report from ${MAGENTA}${HOME_DIR}/${FILE_NAME}${NC}"
@@ -110,83 +112,83 @@ function maniCommands() {
 
 # Displays Generic Status like Host name, CSCF APS version, RTP status and registered subscriber count
 function genStatus() {
-echo
-echo -e "                                               ${BLUE}${H0}${NC}"
-echo -e $DRAW_LINE
-echo
-echo -e "	Host: "${HNAME} \(${GREEN}${NODESTATUS}${NC} node\)"							Date: ${DATE_DISP}"
-echo
-echo -e "	CSCF Version: ${VER2}"                                              
-echo
-echo -e "	APS Version: ${VER}" 
-echo
-if [ $COUNT -eq 10 ]; then   echo -e "	RTP is ${GREEN}UP${NC}"; else echo -e "	RTP is ${RED}DOWN${NC}"; fi
-echo
-if [ $NE3S -eq 7 ]; then   echo -e "	NetACT Agents are ${GREEN}UP${NC}"; else echo -e "	NetACT Agents are ${RED}DOWN${NC}"; fi
-echo 
-if [ $IFSTATUS -eq 0 ]; then   echo -e "	Interfaces are ${GREEN}UP${NC}"; else echo -e "	One (or more) Interface is ${RED}DOWN${NC}"; fi
-if [ "$NODESTATUS" != "Secondary" ]; then
-echo
-if [ -z "$IMPICOUNT" ]; then   echo -e "	Currently, There are "${RED}NO ${NC}"Subscribers REGISTERED "; else echo -e "	There are "${GREEN}$IMPICOUNT ${NC}"Subscribers REGISTERED "; fi
-fi
-echo 
-echo -e $DRAW_LINE
+	echo
+	echo -e "                                               ${BLUE}${H0}${NC}"
+	echo -e $DRAW_LINE
+	echo
+	echo -e "	Host: "${HNAME} \(${GREEN}${NODESTATUS}${NC} node\)"							Date: ${DATE_DISP}"
+	echo
+	echo -e "	CSCF Version: ${VER2}"                                              
+	echo
+	echo -e "	APS Version: ${VER}" 
+	echo
+	if [ $COUNT -eq 10 ]; then   echo -e "	RTP is ${GREEN}UP${NC}"; else echo -e "	RTP is ${RED}DOWN${NC}"; fi
+	echo
+	if [ $NE3S -eq 7 ]; then   echo -e "	NetACT Agents are ${GREEN}UP${NC}"; else echo -e "	NetACT Agents are ${RED}DOWN${NC}"; fi
+	echo 
+	if [ $IFSTATUS -eq 0 ]; then   echo -e "	Interfaces are ${GREEN}UP${NC}"; else echo -e "	One (or more) Interface is ${RED}DOWN${NC}"; fi
+	if [ "$NODESTATUS" != "Secondary" ]; then
+		echo
+		if [ -z "$IMPICOUNT" ]; then   echo -e "	Currently, There are "${RED}NO ${NC}"Subscribers REGISTERED "; else echo -e "	There are "${GREEN}$IMPICOUNT ${NC}"Subscribers REGISTERED "; fi
+	fi
+	echo 
+	echo -e $DRAW_LINE
 }
 
 # Displays SIP & Diameter port status
 function sipDiaStatus() {
-if [ "$NODESTATUS" != "Secondary" ]; then
-echo
-echo -e "                                            ${BLUE}${H1}${NC}"
-echo -e $DRAW_LINE
-printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
-echo -e $DRAW_LINE
-netstat -anpT | egrep '50[6789][01]' | egrep 'IMS_P_IpDp_Co|IMS_P_IpDp_Gm' | egrep 'tcp|udp' | sort
-echo -e $DRAW_LINE
-echo
-echo -e "                                          ${BLUE}${H2}${NC}"
-echo -e $DRAW_LINE
-printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
-echo -e $DRAW_LINE
-netstat -anpT | egrep '386[89]' | egrep 'IMS_DID0|IMS_FEE_' | sort
-echo -e $DRAW_LINE
-fi
+	if [ "$NODESTATUS" != "Secondary" ]; then
+		echo
+		echo -e "                                            ${BLUE}${H1}${NC}"
+		echo -e $DRAW_LINE
+		printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
+		echo -e $DRAW_LINE
+		netstat -anpT | egrep '50[6789][01]' | egrep 'IMS_P_IpDp_Co|IMS_P_IpDp_Gm' | egrep 'tcp|udp' | sort
+		echo -e $DRAW_LINE
+		echo
+		echo -e "                                          ${BLUE}${H2}${NC}"
+		echo -e $DRAW_LINE
+		printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
+		echo -e $DRAW_LINE
+		netstat -anpT | egrep '386[89]' | egrep 'IMS_DID0|IMS_FEE_' | sort
+		echo -e $DRAW_LINE
+	fi
 }
 
 # Displays FEE port status
 function feeStatus() {
-if [[ $(netstat -anpT | egrep '50[89][01]' | egrep 'IMS_P_IpDp_Co' | egrep 'tcp|udp' | sort) ]]; then
-echo
-echo -e "                                            ${BLUE}${H3}${NC}"
-echo -e $DRAW_LINE
-printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
-echo -e $DRAW_LINE
-netstat -anpT | egrep '608[678]' | egrep 'IMS_FEE_'
-echo -e $DRAW_LINE
-fi
+	if [[ $(netstat -anpT | egrep '50[89][01]' | egrep 'IMS_P_IpDp_Co' | egrep 'tcp|udp' | sort) ]]; then
+		echo
+		echo -e "                                            ${BLUE}${H3}${NC}"
+		echo -e $DRAW_LINE
+		printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus%6sProcess Name${NC}\n"
+		echo -e $DRAW_LINE
+		netstat -anpT | egrep '608[678]' | egrep 'IMS_FEE_'
+		echo -e $DRAW_LINE
+	fi
 }
 
 # Displays BGW port Status
 function bgwStatus() {
-if [[ $(netstat -anpT | egrep '5060' | egrep 'IMS_P_IpDp_Gm' | egrep 'tcp|udp' | sort) ]]; then
-echo
-echo -e "                                            ${BLUE}${H4}${NC}"
-echo -e $DRAW_LINE
-printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus${NC}\n"
-echo -e $DRAW_LINE
-netstat -anpT | grep 2944 | grep 'sctp'
-echo -e $DRAW_LINE
-fi
+	if [[ $(netstat -anpT | egrep '5060' | egrep 'IMS_P_IpDp_Gm' | egrep 'tcp|udp' | sort) ]]; then
+		echo
+		echo -e "                                            ${BLUE}${H4}${NC}"
+		echo -e $DRAW_LINE
+		printf "${GREY}Protocol%12sSource IP%19sDestination IP%14sStatus${NC}\n"
+		echo -e $DRAW_LINE
+		netstat -anpT | grep 2944 | grep 'sctp'
+		echo -e $DRAW_LINE
+	fi
 }
 
 # Displays NTP Status
 function ntpStatus() {
-echo
-echo -e "                                                    ${BLUE}${H5}${NC}"
-echo -e $DRAW_LINE
-ntpq -p
-echo -e $DRAW_LINE
-echo
+	echo
+	echo -e "                                                    ${BLUE}${H5}${NC}"
+	echo -e $DRAW_LINE
+	ntpq -p
+	echo -e $DRAW_LINE
+	echo
 }
 
 # Displays Memory utilization status
@@ -240,6 +242,18 @@ function clusterStatus() {
 	echo -e $DRAW_LINE
 	echo
 }
+
+# Displays ASPool status
+function asPoolStatus() {
+	if [[ $(netstat -anpT | egrep '50[89][01]' | egrep 'IMS_P_IpDp_Co' | egrep 'tcp|udp' | sort) ]]; then
+		echo
+		echo -e "                                       ${BLUE}${H10}${NC}"
+		echo -e $DRAW_LINE
+		su - rtp99 -c "imsCscfAsPool -d"
+		echo -e $DRAW_LINE
+		echo
+	fi
+}
  
 # Main function
 function mainFunc() {
@@ -261,6 +275,7 @@ function mainFunc() {
 		ramStatus >> $HOME_DIR/$FILE_NAME
 		diskStatus >> $HOME_DIR/$FILE_NAME
 		clusterStatus >> $HOME_DIR/$FILE_NAME
+		asPoolStatus >> $HOME_DIR/$FILE_NAME
 		clear
 		cat $HOME_DIR/$FILE_NAME
 		echo
