@@ -3,7 +3,7 @@
 #                                                               #
 # Nokia Solutions & Networks (c) 2013, All rights reserved      #
 #                                                               #
-# Graceful Shutdown Script v2.0                                 #
+# Graceful Shutdown Script v3.0                                 #
 #                                                               #
 # Author:  Ashutosh Kumar                                       #
 #                                                               #
@@ -258,7 +258,7 @@ echo
 echo "	Please select the appropriate option from below:"
 echo "	   1. [A]pply Graceful Shutdown"
 echo "	   2. [B]ackout Graceful Shutdown"
-echo "	   3. [K]ickout Immediately"
+echo "	   3. [K]ickout Subscribers Immediately"
 echo "	   4. [Q]uit"
 echo
 read -e -p "	Enter option [A|B|K|Q]: " OPTI
