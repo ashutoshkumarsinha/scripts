@@ -1,19 +1,17 @@
 #!/usr/bin/sh
 #################################################################
 #                                                               #
-# Nokia Solutions & Networks (c) 2013, All rights reserved      #
+# Charter Communications (c) 2017, All rights reserved      		#
 #                                                               #
-# Graceful Shutdown Script v3.0                                 #
+# Graceful Shutdown Script v1.0                                 #
 #                                                               #
-# Author:  Ashutosh Kumar                                       #
+# Author:  Ashutosh Kumar Sinha                                 #
 #                                                               #
-# History: Ashutosh Kumar	08.01.2013 - First Issue            #
-#          Ashutosh Kumar	08.13.2013 - Second Issue           #
-#          Ashutosh Kumar	09.22.2013 - Third Issue            #
+# History: Ashutosh Kumar	03.10.2017 - First Issue            	#
 #                                                               #
 #################################################################
 
-# Kickoff immediately function
+# Kickoff subscribers immediately function
 function gskApply () {
 clear
 rm -f /tmp/GS_script.log
@@ -31,21 +29,27 @@ echo "--------------------------------------------------------------------------
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/pcscf System.GSRespMsgCode='503'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "I-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values are: 0 (normal operation), 1 (refuse new requests)
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/icscf System.OpStateIcscf='1'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "P-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values: 0 (ACTIVE), 1 (REJECT_USERS), 2 (REMOVE_DIALOGS)
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/cscfb System.OpStatePcscf='2'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "S-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values: 0 (normal operation), 1 (deregister semi-registered users),
+# 2 (deregister passive users, that is, without session),
+# 3 (release sessions + deregister all users),
+# 4 (as 3 + collect charging data records (CDR))
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/cscfb System.OpStateScscf='3'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
-echo "Stopping load balancer agent" >> /tmp/GS_script.log
-echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
-su - rtp99 -c "execRTPenv RtpInlabAgent -stop" >> /tmp/GS_script.log
-echo " " >> /tmp/GS_script.log
+#echo "Stopping load balancer agent" >> /tmp/GS_script.log
+#echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
+#su - rtp99 -c "execRTPenv RtpInlabAgent -stop" >> /tmp/GS_script.log
+#echo " " >> /tmp/GS_script.log
 
 GSRE=`egrep -c 'Successfully set System.GSReregExpire' /tmp/GS_script.log`
 if [ "$GSRE" = "1" ]; then
@@ -107,21 +111,27 @@ echo "--------------------------------------------------------------------------
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/pcscf System.GSRespMsgCode='503'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "I-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values are: 0 (normal operation), 1 (refuse new requests)
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/icscf System.OpStateIcscf='1'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "P-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values: 0 (ACTIVE), 1 (REJECT_USERS), 2 (REMOVE_DIALOGS)
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/cscfb System.OpStatePcscf='1'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "S-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values: 0 (normal operation), 1 (deregister semi-registered users),
+# 2 (deregister passive users, that is, without session),
+# 3 (release sessions + deregister all users),
+# 4 (as 3 + collect charging data records (CDR))
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/cscfb System.OpStateScscf='2'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
-echo "Stopping load balancer agent" >> /tmp/GS_script.log
-echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
-su - rtp99 -c "execRTPenv RtpInlabAgent -stop" >> /tmp/GS_script.log
-echo " " >> /tmp/GS_script.log
+#echo "Stopping load balancer agent" >> /tmp/GS_script.log
+#echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
+#su - rtp99 -c "execRTPenv RtpInlabAgent -stop" >> /tmp/GS_script.log
+#echo " " >> /tmp/GS_script.log
 
 GSRE=`egrep -c 'Successfully set System.GSReregExpire' /tmp/GS_script.log`
 if [ "$GSRE" = "1" ]; then
@@ -183,21 +193,27 @@ echo "--------------------------------------------------------------------------
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/pcscf System.GSRespMsgCode='480'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "I-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values are: 0 (normal operation), 1 (refuse new requests)
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/icscf System.OpStateIcscf='0'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "P-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values: 0 (ACTIVE), 1 (REJECT_USERS), 2 (REMOVE_DIALOGS)
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/cscfb System.OpStatePcscf='0'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
 echo "S-CSCF Graceful Shutdown" >> /tmp/GS_script.log
+# Possible values: 0 (normal operation), 1 (deregister semi-registered users),
+# 2 (deregister passive users, that is, without session),
+# 3 (release sessions + deregister all users),
+# 4 (as 3 + collect charging data records (CDR))
 echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
 su - rtp99 -c "AdvCfgTool.sh -a SET ims/cscf/cscfb System.OpStateScscf='0'" >> /tmp/GS_script.log
 echo " " >> /tmp/GS_script.log
-echo "Starting load balancer agent" >> /tmp/GS_script.log
-echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
-su - rtp99 -c "execRTPenv RtpInlabAgent -start" >> /tmp/GS_script.log
-echo " " >> /tmp/GS_script.log
+#echo "Starting load balancer agent" >> /tmp/GS_script.log
+#echo "----------------------------------------------------------------------------------" >> /tmp/GS_script.log
+#su - rtp99 -c "execRTPenv RtpInlabAgent -start" >> /tmp/GS_script.log
+#echo " " >> /tmp/GS_script.log
 
 GSRE=`egrep -c 'Successfully set System.GSReregExpire' /tmp/GS_script.log`
 if [ "$GSRE" = "1" ]; then
@@ -244,7 +260,7 @@ echo
 # Main function for calling Graceful Shutdown Apply and Backout function
 function mainGS () {
 clear
-A_GS="1" 
+A_GS="1"
 B_GS="2"
 K_GS="3"
 Q_GS="4"
@@ -279,9 +295,9 @@ while [ "$finish" = '-1' ]
     done
 
 if [ "$OPTI" = "$A_GS" ]; then
-	gsApply 
+	gsApply
 elif [ "$OPTI" = "$B_GS" ]; then
-	bApply 
+	bApply
 elif [ "$OPTI" = "$K_GS" ]; then
 	gskApply
 elif [ "$OPTI" = "$Q_GS" ]; then
