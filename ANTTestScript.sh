@@ -23,7 +23,7 @@ echo " " >> /tmp/ANTTest.log
 COUNTER=0
 while [  $COUNTER -lt 50 ]; do
     let RANGEVALUE="99.99.99.$COUNTER/32"
-    ./cmcli INS ims/cscf/pcscf System.AccessNetworks '{ Range: $RANGEVALUE, Network: direct, Ext_SBC: 0, TLS_Mode: TLS_BOTH, Realm:, CLF:, NetExt:, GqVariant: None, LargeNet: 0, MR_ID: NO, LI_Capable: 0, LI_Capable_PCSCF: 0, PCRF_Signalling: 0, Primary_PDF: 0, Secondary_PDF: 0, Privileged_Sender: 0, Gating: Legacy, NVS_pool_name:, Allow_Emergency_Registrations: 0, Remark: Residential, Primary_PCRF:, Secondary_PCRF:, Transition_Observation: DISABLED, FreqReReg: DISABLED, FreqReRegTime: 90, FreqReRegTimeTcp: 90, DPP: 100 }' >> /tmp/ANTTest.log             
+    /opt/cmbase/cli/bin/cmcli INS DN1/DU1_CSCF_CTEC01/V10/Common ims/cscf/pcscf System.AccessNetworks '{ Range: $RANGEVALUE, Network: direct, Ext_SBC: 0, TLS_Mode: TLS_BOTH, Realm:, CLF:, NetExt:, GqVariant: None, LargeNet: 0, MR_ID: NO, LI_Capable: 0, LI_Capable_PCSCF: 0, PCRF_Signaling: 0, Primary_PDF: 0, Secondary_PDF: 0, Privileged_Sender: 0, Gating: Legacy, NVS_pool_name:, Allow_Emergency_Registrations: 0, Remark: Residential, Primary_PCRF:, Secondary_PCRF:, Transition_Observation: DISABLED, FreqReReg: DISABLED, FreqReRegTime: 90, FreqReRegTimeTcp: 90, DPP: 100 }'
     let COUNTER=COUNTER+1
 done
 echo " " >> /tmp/ANTTest.log
@@ -46,7 +46,7 @@ echo " " >> /tmp/ANTTest.log
 COUNTER=0
 while [  $COUNTER -lt 50 ]; do
     let RANGEVALUE="99.99.99.$COUNTER/32"
-    ./cmcli INS ims/cscf/pcscf System.AccessNetworks '{ Range: $RANGEVALUE, Network: direct, Ext_SBC: 0, TLS_Mode: TLS_BOTH, Realm:, CLF:, NetExt:, GqVariant: None, LargeNet: 0, MR_ID: NO, LI_Capable: 0, LI_Capable_PCSCF: 0, PCRF_Signalling: 0, Primary_PDF: 0, Secondary_PDF: 0, Privileged_Sender: 0, Gating: Legacy, NVS_pool_name:, Allow_Emergency_Registrations: 0, Remark: Residential, Primary_PCRF:, Secondary_PCRF:, Transition_Observation: DISABLED, FreqReReg: DISABLED, FreqReRegTime: 90, FreqReRegTimeTcp: 90, DPP: 100 }' >> /tmp/ANTTest.log             
+    /opt/cmbase/cli/bin/cmcli INS DN1/DU1_CSCF_CTEC01/V10/Common ims/cscf/pcscf System.AccessNetworks '{ Range: $RANGEVALUE, Network: direct, Ext_SBC: 0, TLS_Mode: TLS_BOTH, Realm:, CLF:, NetExt:, GqVariant: None, LargeNet: 0, MR_ID: NO, LI_Capable: 0, LI_Capable_PCSCF: 0, PCRF_Signaling: 0, Primary_PDF: 0, Secondary_PDF: 0, Privileged_Sender: 0, Gating: Legacy, NVS_pool_name:, Allow_Emergency_Registrations: 0, Remark: Residential, Primary_PCRF:, Secondary_PCRF:, Transition_Observation: DISABLED, FreqReReg: DISABLED, FreqReRegTime: 90, FreqReRegTimeTcp: 90, DPP: 100 }'
     let COUNTER=COUNTER+1
     sleep 20
 done
@@ -70,7 +70,7 @@ echo " " >> /tmp/ANTTest.log
 COUNTER=0
 while [  $COUNTER -lt 50 ]; do
     let RANGEVALUE="99.99.99.$COUNTER/32"
-    # Delete command
+    /opt/cmbase/cli/bin/cmcli DEL DN1/DU1_CSCF_CTEC01/V10/Common ims/cscf/pcscf System.AccessNetworks --where '{ Range: $RANGEVALUE, Network: direct, Ext_SBC: 0, TLS_Mode: TLS_BOTH, Realm:, CLF:, NetExt:, GqVariant: None, LargeNet: 0, MR_ID: NO, LI_Capable: 0, LI_Capable_PCSCF: 0, PCRF_Signaling: 0, Primary_PDF: 0, Secondary_PDF: 0, Privileged_Sender: 0, Gating: Legacy, NVS_pool_name:, Allow_Emergency_Registrations: 0, Remark: Residential, Primary_PCRF:, Secondary_PCRF:, Transition_Observation: DISABLED, FreqReReg: DISABLED, FreqReRegTime: 90, FreqReRegTimeTcp: 90, DPP: 100 }'
     let COUNTER=COUNTER+1
 done
 echo " " >> /tmp/ANTTest.log
@@ -92,7 +92,7 @@ echo "--------------------------------------------------------------------------
 echo " " >> /tmp/ANTTest.log
 COUNTER=0
 while [  $COUNTER -lt 50 ]; do
-    # Config Dump command
+    /opt/cmbase/cli/bin/cmcli disp level=DN DN1/DU1_CSCF_CTEC01/V10/Common ims/cscf/pcscf System.AccessNetworks >> /var/tmp/DN1_cfg_`date +y%h%d_%H%M%S`.txt​
     let COUNTER=COUNTER+1
 done
 echo " " >> /tmp/ANTTest.log
