@@ -9,6 +9,7 @@
 #                                                               #
 # History: Ashutosh Kumar	20.10.2017 - First Issue            #
 #          Ashutosh Kumar	24.10.2017 - Second Issue           #
+#          Ashutosh Kumar	25.10.2017 - Third Issue            #
 #                                                               #
 #################################################################
 
@@ -24,7 +25,9 @@ function PushANTConfig () {
     COUNTER=0
     while [  $COUNTER -lt 50 ]; do
         let RANGEVALUE="99.99.99.1$COUNTER"
+        redis-cli -s /tmp/RedisCm01.sock -n 1 get DN1,DU1_CSCF_CTEC01,V10  >> /tmp/ANTTest.log
         /opt/cmbase/cli/bin/cmcli INS DN1/DU1_CSCF_CTEC01/V10/Common ims/cscf/pcscf System.AccessNetworks '{ Range: $RANGEVALUE, Network: direct, Ext_SBC: 0, TLS_Mode: TLS_BOTH, Realm:, CLF:, NetExt:, GqVariant: None, LargeNet: 0, MR_ID: NO, LI_Capable: 0, LI_Capable_PCSCF: 0, PCRF_Signaling: 0, Primary_PDF: 0, Secondary_PDF: 0, Privileged_Sender: 0, Gating: Legacy, NVS_pool_name:, Allow_Emergency_Registrations: 0, Remark: Residential, Primary_PCRF:, Secondary_PCRF:, Transition_Observation: DISABLED, FreqReReg: DISABLED, FreqReRegTime: 90, FreqReRegTimeTcp: 90, DPP: 100 }'  >> /tmp/ANTTest.log
+        redis-cli -s /tmp/RedisCm01.sock -n 1 get DN1,DU1_CSCF_CTEC01,V10  >> /tmp/ANTTest.log
         echo $RANGEVALUE
         let COUNTER=COUNTER+1
     done
@@ -33,7 +36,8 @@ function PushANTConfig () {
     echo "	ANT Test Config has been applied on `hostname` on `date` without delay" >> /tmp/ANTTest.log
     echo "----------------------------------------------------------------------------------" >> /tmp/ANTTest.log
     echo " " >> /tmp/ANTTest.log
-    echo "Log has been written to /tmp/ANTTest.log" 
+    mv /tmp/ANTTest.log /tmp/ANTTest_`date +%y%h%d_%H%M`.log
+    echo "Log has been written to /tmp/ANTTest_`date +%y%h%d_%H%M`.log"
 }
 
 # Function for Pushing Test ANT Config With 20 Seconds Delay 
@@ -48,7 +52,9 @@ function PushANTConfigWDelay () {
     COUNTER=0
     while [  $COUNTER -lt 50 ]; do
         let RANGEVALUE="99.99.99.1$COUNTER"
+        redis-cli -s /tmp/RedisCm01.sock -n 1 get DN1,DU1_CSCF_CTEC01,V10  >> /tmp/ANTTest.log
         /opt/cmbase/cli/bin/cmcli INS DN1/DU1_CSCF_CTEC01/V10/Common ims/cscf/pcscf System.AccessNetworks '{ Range: $RANGEVALUE, Network: direct, Ext_SBC: 0, TLS_Mode: TLS_BOTH, Realm:, CLF:, NetExt:, GqVariant: None, LargeNet: 0, MR_ID: NO, LI_Capable: 0, LI_Capable_PCSCF: 0, PCRF_Signaling: 0, Primary_PDF: 0, Secondary_PDF: 0, Privileged_Sender: 0, Gating: Legacy, NVS_pool_name:, Allow_Emergency_Registrations: 0, Remark: Residential, Primary_PCRF:, Secondary_PCRF:, Transition_Observation: DISABLED, FreqReReg: DISABLED, FreqReRegTime: 90, FreqReRegTimeTcp: 90, DPP: 100 }'  >> /tmp/ANTTest.log
+        redis-cli -s /tmp/RedisCm01.sock -n 1 get DN1,DU1_CSCF_CTEC01,V10  >> /tmp/ANTTest.log
         echo $RANGEVALUE
         let COUNTER=COUNTER+1
         sleep 20
@@ -58,7 +64,8 @@ function PushANTConfigWDelay () {
     echo "	ANT Test Config has been applied on `hostname` on `date` with 20 seconds delay" >> /tmp/ANTTest.log
     echo "----------------------------------------------------------------------------------" >> /tmp/ANTTest.log
     echo " " >> /tmp/ANTTest.log
-    echo "Log has been written to /tmp/ANTTest.log" 
+    mv /tmp/ANTTest.log /tmp/ANTTest_`date +%y%h%d_%H%M`.log
+    echo "Log has been written to /tmp/ANTTest_`date +%y%h%d_%H%M`.log"
 }
 
 # Function for Deleting Test ANT Config  
@@ -82,7 +89,8 @@ function ANTDelete () {
     echo "	ANT Test Config has been deleted on `hostname` on `date`" >> /tmp/ANTTest.log
     echo "----------------------------------------------------------------------------------" >> /tmp/ANTTest.log
     echo " " >> /tmp/ANTTest.log
-    echo "Log has been written to /tmp/ANTTest.log" 
+    mv /tmp/ANTTest.log /tmp/ANTTest_`date +%y%h%d_%H%M`.log
+    echo "Log has been written to /tmp/ANTTest_`date +%y%h%d_%H%M`.log"
 }
 
 # Function for Taking ANT Config Dump
@@ -98,6 +106,7 @@ function ANTDumpConfig () {
     while [  $COUNTER -lt 50 ]; do
         echo "----------------------------------------------------------------------------------" >> /tmp/ANTTest.log
         echo "---------------------------------------`date`-------------------------------------" >> /tmp/ANTTest.log
+        redis-cli -s /tmp/RedisCm01.sock -n 1 get DN1,DU1_CSCF_CTEC01_Spec,VERSIONS >> /tmp/ANTTest.log
         /opt/cmbase/cli/bin/cmcli disp level=DN DN1 param=System.AccessNetworks >> /tmp/ANTTest.log
         echo "---------------------------------------`date`-------------------------------------" >> /tmp/ANTTest.log
         echo "----------------------------------------------------------------------------------" >> /tmp/ANTTest.log
@@ -108,7 +117,8 @@ function ANTDumpConfig () {
     echo "	ANT Test Config Dump has finished on `hostname` on `date`" >> /tmp/ANTTest.log
     echo "----------------------------------------------------------------------------------" >> /tmp/ANTTest.log
     echo " " >> /tmp/ANTTest.log
-    echo "Log has been written to /tmp/ANTTest.log" 
+    mv /tmp/ANTTest.log /tmp/ANTTest_`date +%y%h%d_%H%M`.log
+    echo "Log has been written to /tmp/ANTTest_`date +%y%h%d_%H%M`.log"
 }
 
 # Main function for calling other function
